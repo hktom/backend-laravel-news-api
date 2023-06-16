@@ -16,6 +16,7 @@ return new class extends Migration
             $table->tinyInteger('dark_mode')->default(0);
             $table->tinyInteger('notification')->default(0);
             $table->tinyInteger('disposition')->default(0);
+            $table->showByPage('showByPage')->default(20);
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

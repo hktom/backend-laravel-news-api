@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('source_id')->nullable();
             $table->tinyInteger('read_later')->default(0);
             $table->tinyInteger('favorites')->default(0);
+            $table->tinyInteger('already_read')->default(0);
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
