@@ -16,8 +16,6 @@ return new class extends Migration
             $table->uuid('user_id');
             $table->string('name');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            // $table->uuid('parent_id')->nullable();
-            // $table->uuid('article_id')->nullable();
             $table->timestamps();
         });
     }
