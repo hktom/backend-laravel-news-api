@@ -34,7 +34,7 @@ class AuthController extends Controller
     public function login(array $credentials)
     {
         if (!$token = auth()->attempt($credentials)) {
-            $this->token = null;
+            $this->token = '';
         } else {
 
             $this->token = $token;

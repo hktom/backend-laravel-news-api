@@ -28,10 +28,10 @@ type Mutation {
 }
 
 input InputArticle {
-    id: ID!
     already_read: Int
     read_later: Int
     favorite: Int
+    url: String
 }
 
 input InputPreference {
