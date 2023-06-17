@@ -18,21 +18,20 @@ final class GetProfile
     public function __invoke($_, array $args)
     {
         $auth = new AuthController();
-        $me = $auth->me();
 
-        $folders = Folder::where('user_id', $me->id)->first();
-        $taxonomies = Taxonomy::where('user_id', $me->id)->first();
-        $preferences = Preference::where('user_id', $me->id)->first();
-        $settings = Setting::where('user_id', $me->id)->first();
+        $folders = Folder::where('user_id', $auth->user_id)->first();
+        $taxonomies = Taxonomy::where('user_id', $auth->user_id)->first();
+        $preferences = Preference::where('user_id', $auth->user_id)->first();
+        $settings = Setting::where('user_id', $auth->user_id)->first();
 
-        $sources = $this->getPreferences('source', $me->id);
-        $categories = $this->getPreferences('category', $me->id);
-        $authors = $this->getPreferences('author', $me->id);
+        $sources = $this->getPreferences('source', $auth->user_id);
+        $categories = $this->getPreferences('category', $auth->user_id);
+        $authors = $this->getPreferences('author', $auth->user_id);
 
         $feeds= [];
 
         return [
-            'user' => $me,
+            'user' => $auth->user,
             'feed' => $feeds,
             'settings' => $settings,
             'preferences' => $preferences,
