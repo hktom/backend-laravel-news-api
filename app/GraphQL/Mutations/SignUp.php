@@ -34,7 +34,7 @@ final class SignUp
 
         $auth = new AuthController();
         $auth->login($credentials);
-        // return $token;
+        
         return [
             'token' => $auth->token,
             'status' => $auth->token ? 200 : 401,
