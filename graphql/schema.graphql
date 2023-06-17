@@ -1,41 +1,148 @@
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
-scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar DateTime
+    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
-"Indicates what fields are available at the top level of a query operation."
+scalar DateTimeTz
+    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTimeTz")
+
+# input connectID {
+#     connect: ID!
+# }
+
 type Query {
-    "Find a single user by an identifying attribute."
-    user(
-      "Search by primary key."
-      id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
-
-      "Search by email address."
-      email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
-    ): User @find
-
-    "List multiple users."
-    users(
-      "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
-      name: String @where(operator: "like")
-    ): [User!]! @paginate(defaultCount: 10)
+    getProfile: Profile @guard
+    getDefaultArticle: [Article]!
+    searchArticle(search: String!): [Article]
 }
 
-"Account of a person who utilizes this application."
-type User {
-    "Unique primary key."
-    id: ID!
+type Mutation {
+    signIn(email: String!, password: String!): Auth!
+    signUp(name: String!, email: String!, password: String!): Auth!
+    updatePassword(password: String!, password_confirmation: String!): User
+        @guard
+    updateUser(name: String!, avatar: String): User @update @guard
 
-    "Non-unique name."
+    articleStatus(input: InputArticle! @spread): Article @guard
+    preference(input: InputPreference! @spread): Preference @guard
+}
+
+input InputArticle {
+    already_read: Int
+    read_later: Int
+    favorite: Int
+    url: String
+}
+
+input InputPreference {
     name: String!
+    type: String!
+    feed: Int
+    folder: String
+}
 
-    "Unique email address."
+input InputArticle {
+    title: String
+    description: String
+    content: String
+    image: String
+    publishedAt: String
+    url: String
+    category: String
+    source: String
+    source_id: String
+    source_name: String
+    author: String
+    read_later: Int
+    favorites: Int
+    already_read: Int
+}
+
+type User {
+    id: ID
+    name: String!
     email: String!
+    avatar: String
+    created_at: DateTime
+    updated_at: DateTime
+    folders: [Folder] @hasMany
+    Settings: Setting @hasMany
+    articles: [Article] @hasMany
+    taxonomies: [Taxonomy] @hasMany
+    preferences: [Preference] @hasMany
+}
 
-    "When the email was verified."
-    email_verified_at: DateTime
+type Article {
+    id: ID
+    title: String
+    description: String
+    content: String
+    image: String
+    publishedAt: String
+    url: String
+    category: String
+    source: String
+    source_id: String
+    source_name: String
+    author: String
+    read_later: Int
+    favorites: Int
+    already_read: Int
+    user: User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+}
 
-    "When the account was created."
+type Folder {
+    id: ID
+    name: String!
+    user: User @belongsTo
+    preferences: [Preference] @hasMany
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type Preference {
+    id: ID
+    feed: Int
+    user: User @belongsTo
+    folder: Folder @belongsTo
+    taxonomy: Taxonomy @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type Setting {
+    id: ID
+    user: User @belongsTo
+    disposition: Int
+    dark_mode: Int
+    notification: Int
+    showByPage: Int
     created_at: DateTime!
-
-    "When the account was last updated."
     updated_at: DateTime!
+}
+
+type Taxonomy {
+    id: ID
+    name: String!
+    type: String!
+    user: User @belongsTo
+    preferences: [Preference] @hasMany
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type Profile {
+    user: User
+    feed: [Article]
+    folders: [Folder]
+    preferences: [Preference]
+    taxonomies: [Taxonomy]
+    settings: [Setting]
+}
+
+type Auth {
+    status: Int
+    token: String
+    error: String
 }
