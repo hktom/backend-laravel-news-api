@@ -19,17 +19,19 @@ class TaxonomyController extends Controller
         $this->user_id = $auth->user_id;
     }
 
-    public function add(string $name, string $type)
+    public function upsert(string $name, string $type, string $parent_id = null)
     {
 
-        $taxonomy = Taxonomy::where('name', $name)->where('type', $type)->where('user_id', $this->user_id)->first();
+        $taxonomy = Taxonomy::where('name', $name)->where('type', $type)->where('parent_id', $parent_id)->where('user_id', $this->user_id)->first();
         if (!$taxonomy) {
             $taxonomy = new Taxonomy();
-            $taxonomy->name = $name;
-            $taxonomy->type = $type;
             $taxonomy->user_id = $this->user_id;
-            $taxonomy->save();
         }
+
+        $taxonomy->name = $name;
+        $taxonomy->type = $type;
+        $taxonomy->parent_id = $parent_id;
+        $taxonomy->save();
         $this->taxonomy = $taxonomy;
     }
 

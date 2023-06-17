@@ -24,6 +24,7 @@ type Mutation {
 
     articleStatus(input: InputArticle! @spread): Article @guard
     taxonomyUpsert(input: InputTaxonomy! @spread): Taxonomy @guard
+    settingUpsert(input: InputSetting! @spread): Setting @guard
 }
 
 input InputArticle {
@@ -55,6 +56,14 @@ input InputArticle {
     read_later: Int
     favorites: Int
     already_read: Int
+}
+
+input InputSetting {
+    disposition: Int
+    dark_mode: Int
+    notification: Int
+    showByPage: Int
+    feed_by: String
 }
 
 type User {

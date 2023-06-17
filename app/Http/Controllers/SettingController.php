@@ -8,6 +8,7 @@ use App\Models\Setting;
 class SettingController extends Controller
 {
     private string $user_id;
+    public Setting $setting;
 
     public function __construct()
     {
@@ -18,7 +19,7 @@ class SettingController extends Controller
         $this->user_id = $auth->me()->id;
     }
 
-    public function upsertSetting(array $fields)
+    public function upsert(array $fields)
     {
         $setting = Setting::where('user_id', $this->user_id)->first();
         if (!$setting) {
@@ -31,5 +32,6 @@ class SettingController extends Controller
         }
 
         $setting->save();
+        $this->setting = $setting;
     }
 }
