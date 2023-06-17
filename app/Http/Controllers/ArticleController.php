@@ -17,6 +17,8 @@ class ArticleController extends Controller
     // public string $categories;
     // public string $authors;
 
+    public array $field_from = ['title', 'description', 'content', 'urlToImage', 'url', 'publishedAt', 'source'];
+
     public array $fields = [
         'title',
         'description',
@@ -40,7 +42,7 @@ class ArticleController extends Controller
     {
         $url = "https://newsapi.org/v2/top-headlines?country=" . $country . "&apiKey=" . $this->api_key;
         $api = new APIController($url);
-        $articles = new FormatAPIController($api->data, ['title', 'description', 'content', 'urlToImage', 'url', 'publishedAt', 'source'], $this->fields);
+        $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
         $this->articles = $articles->formatted;
     }
 
@@ -51,7 +53,7 @@ class ArticleController extends Controller
         $url .= "&apiKey=" . $this->api_key;
 
         $data = new APIController($url);
-        $articles = new FormatAPIController($data, ['title', 'description', 'url', 'urlToImage', 'publishedAt'], $this->fields);
+        $articles = new FormatAPIController($data, $this->field_from, $this->fields);
         $this->articles = $articles->formatted;
     }
 
@@ -62,17 +64,9 @@ class ArticleController extends Controller
         $url .= "&apiKey=" . $this->api_key;
 
         $data = new APIController($url);
-        $articles = new FormatAPIController($data, ['title', 'description', 'url', 'urlToImage', 'publishedAt'], $this->fields);
-        $this->articles = $articles;
+        $articles = new FormatAPIController($data, $this->field_from, $this->fields);
+        $this->articles = $articles->formatted;
         // return $articles;
         // $url .= "&from=2023-06-17&sortBy=popularity";
-    }
-
-    public function changeStatus(string $status, string $url)
-    {
-        $article = Article::where('url', $url)->first();
-        $article->$status = !$article->$status;
-        $article->save();
-        $this->article = $article;
     }
 }
