@@ -22,6 +22,8 @@ class Article extends Model
         'category',
         'source',
         'source_id',
+        'source_name',
+        'author',
         'read_later',
         'favorites',
         'already_read',

@@ -25,7 +25,6 @@ class ArticleController extends Controller
         'url',
         'publishedAt',
         'source',
-        'source_id',
         'category',
         'read_later',
         'favorites',
