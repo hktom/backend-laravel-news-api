@@ -13,10 +13,10 @@ class TaxonomyController extends Controller
     public function __construct()
     {
         $auth = new AuthController();
-        if (!$auth->me()->id) {
+        if (!$auth->user_id) {
             throw new \Exception("User not found", 1);
         }
-        $this->user_id = $auth->me()->id;
+        $this->user_id = $auth->user_id;
     }
 
     public function add(string $name, string $type)

@@ -13,7 +13,7 @@ final class Preference
     public function __invoke($_, array $args)
     {
         $preference = new PreferenceController();
-        $preference->upsert($args['name'], $args['type'], $args['feed'], $args['folder']);
+        $preference->upsert($args);
         return $preference->preference;
     }
 }

@@ -13,17 +13,16 @@ class PreferenceController extends Controller
     public function __construct()
     {
         $auth = new AuthController();
-        if (!$auth->me()->id) {
+        if (!$auth->user_id) {
             throw new \Exception("User not found", 1);
         }
-        $this->user_id = $auth->me()->id;
+        $this->user_id = $auth->user_id;
     }
 
-    public function upsert(string $name, string $type, int $feed = 0, string $folder = null)
+    public function upsert(array $fields)
     {
         $taxonomy = new TaxonomyController();
-        $taxonomy->add($name, $type);
-        $folder = new FolderController($folder);
+        $taxonomy->add($fields['name'], $fields['type']);
         $preference = Preference::where('user_id', $this->user_id)->where('taxonomy_id', $taxonomy->taxonomy->id)->first();
 
         if (!$preference) {
@@ -32,10 +31,12 @@ class PreferenceController extends Controller
             $preference->taxonomy_id = $taxonomy->taxonomy->id;
         }
 
-        if ($feed > 0) {
-            $preference->feed_id = $feed;
+        if (isset($fields['feed'])) {
+            $preference->feed = $fields['feed'];
         }
-        if ($folder->folder->id) {
+        if (isset($fields['folder'])) {
+            $folder = new FolderController();
+            $folder->add($fields['folder']);
             $preference->folder_id = $folder->folder->id;
         }
         $preference->save();

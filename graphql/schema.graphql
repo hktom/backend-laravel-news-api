@@ -38,7 +38,7 @@ input InputPreference {
     name: String!
     type: String!
     feed: Int
-    folder: Int
+    folder: String
 }
 
 input InputArticle {
@@ -104,7 +104,7 @@ type Folder {
 
 type Preference {
     id: ID
-    feed: Int!
+    feed: Int
     user: User @belongsTo
     folder: Folder @belongsTo
     taxonomy: Taxonomy @belongsTo
