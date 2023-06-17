@@ -29,7 +29,7 @@ final class GetProfile
         $categories = $this->getPreferences('category', $me->id);
         $authors = $this->getPreferences('author', $me->id);
 
-        $feeds= "";
+        $feeds= [];
 
         return [
             'user' => $me,

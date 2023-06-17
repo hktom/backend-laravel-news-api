@@ -15,7 +15,7 @@ class Setting extends Model
         'user_id',
         'disposition',
         'dark_mode',
-        'notifications',
+        'notification',
         'showByPage',
     ];
 
