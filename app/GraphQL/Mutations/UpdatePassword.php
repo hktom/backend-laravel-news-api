@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Models\User;
 final class UpdatePassword
 {
     /**
@@ -10,6 +11,9 @@ final class UpdatePassword
      */
     public function __invoke($_, array $args)
     {
-        // TODO implement the resolver
+        $user = User::find($args['id']);
+        $user->password = bcrypt($args['password']);
+        $user->save();
+        return $user;
     }
 }

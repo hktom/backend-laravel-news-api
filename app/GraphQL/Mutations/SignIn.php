@@ -2,6 +2,8 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Http\Controllers\AuthController;
+
 final class SignIn
 {
     /**
@@ -10,6 +12,13 @@ final class SignIn
      */
     public function __invoke($_, array $args)
     {
-        // TODO implement the resolver
+        $credentials = [
+            'email' => $args['email'],
+            'password' => $args['password'],
+        ];
+
+        $auth = new AuthController();
+        $token = $auth->login($credentials);
+        return $token;
     }
 }

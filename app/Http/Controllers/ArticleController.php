@@ -8,9 +8,27 @@ class ArticleController extends Controller
 {
 
     private $api_key;
-    public array $fields = ['title', 'description', 'content', 'category', 'url', 'urlToImage', 'publishedAt'];
 
-    public function __construct($api_key)
+    // public string $sources;
+    // public string $categories;
+    // public string $authors;
+
+    public array $fields = [
+        'title',
+        'description',
+        'content',
+        'image',
+        'publishedAt',
+        'url',
+        'category',
+        'source',
+        'source_id',
+        'read_later',
+        'favorites',
+        'already_read',
+    ];
+
+    public function __construct(string $api_key='')
     {
         $this->api_key = $api_key;
     }

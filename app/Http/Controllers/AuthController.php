@@ -34,11 +34,12 @@ class AuthController extends Controller
     /**
      * Get the authenticated User.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \App\Models\User
      */
-    public function me()
+    public function me(): \App\Models\User
     {
-        return response()->json(auth()->user());
+        // return response()->json(auth()->user());
+        return auth()->user();
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Queries;
 
+use App\Http\Controllers\ArticleController;
 final class GetDefaultArticle
 {
     /**
@@ -10,6 +11,8 @@ final class GetDefaultArticle
      */
     public function __invoke($_, array $args)
     {
-        // TODO implement the resolver
+        $article = new ArticleController();
+        $article = $article->getHeadline();
+        return $article;
     }
 }
