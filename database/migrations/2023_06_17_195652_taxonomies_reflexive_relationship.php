@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->string('author')->nullable()->after('source_id');
-            $table->string('source_name')->nullable()->after('source_id');
+        Schema::table('taxonomies', function (Blueprint $table) {
+            $table->uuid('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('taxonomies')->onDelete('cascade');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
+        Schema::table('taxonomies', function (Blueprint $table) {
             //
         });
     }

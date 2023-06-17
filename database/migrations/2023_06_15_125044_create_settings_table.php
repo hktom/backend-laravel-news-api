@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('feed_by')->nullable();
             $table->tinyInteger('dark_mode')->default(0);
             $table->tinyInteger('notification')->default(0);
             $table->tinyInteger('disposition')->default(0);
