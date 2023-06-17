@@ -13,8 +13,12 @@ final class SignUp
      */
     public function __invoke($_, array $args)
     {
-        if (User::where('email', $args['email'])->first()){
-            throw new \Exception('Email already exists');
+        if (User::where('email', $args['email'])->first()) {
+            return [
+                'token' => null,
+                'status' => 401,
+                'error' => 'Email already exists'
+            ];
         }
 
         $user = new User();

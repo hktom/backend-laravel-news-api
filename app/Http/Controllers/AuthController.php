@@ -29,7 +29,7 @@ class AuthController extends Controller
             return null;
         }
 
-        return $this->respondWithToken($token);
+        return $token;
     }
 
     /**
@@ -62,7 +62,7 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        return auth()->refresh();
     }
 
     /**
