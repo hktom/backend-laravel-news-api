@@ -5,6 +5,7 @@ scalar DateTime
 type Query {
     getProfile: Profile @auth @guard
     getDefaultArticle: Article
+    SearchArticle(search:String!): [Article]
 }
 
 type Mutation {
