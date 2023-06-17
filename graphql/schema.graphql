@@ -24,7 +24,6 @@ type Mutation {
 
     articleStatus(input: InputArticle! @spread): Article @guard
     preference(input: InputPreference! @spread): Preference @guard
-    updateArticle(input: InputArticle! @spread): Article @update @guard
 }
 
 input InputArticle {
