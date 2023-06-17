@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 
 class FormatAPIController extends Controller
 {
-    public function __construct(array $data, array $from, array $to)
+    public function __construct($data, array $from, array $to)
     {
         $formatted = [];
 

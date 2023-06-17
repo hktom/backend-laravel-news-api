@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 // class User extends Authenticatable implements JWTSubject
 class User extends Authenticatable implements JWTSubject
@@ -24,6 +25,7 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'name',
         'email',
+        'avatar',
         'password',
     ];
 
@@ -66,4 +68,54 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get all of the folders for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function folders(): HasMany
+    {
+        return $this->hasMany(Folder::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get all of the settings for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function settings(): HasMany
+    {
+        return $this->hasMany(Setting::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get all of the articles for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function articles(): HasMany
+    {
+        return $this->hasMany(Article::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get all of the taxonomies for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function taxonomies(): HasMany
+    {
+        return $this->hasMany(Taxonomy::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get all of the preference for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function preference(): HasMany
+    {
+        return $this->hasMany(Preference::class, 'user_id', 'id');
+    }
 }

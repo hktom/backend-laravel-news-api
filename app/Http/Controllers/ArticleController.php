@@ -20,12 +20,17 @@ class ArticleController extends Controller
         $url = "https://newsapi.org/v2/top-headlines?" . $country . "=us&apiKey=" . $this->api_key;
         $data = new APIController($url);
         $articles = new FormatAPIController($data, ['title', 'description', 'url', 'urlToImage', 'publishedAt'], $this->fields);
+        return $articles;
     }
 
     public function searchArticle(string $search){
         $url = "https://newsapi.org/v2/everything?";
         $url .="q=".$search;
-        // $url .= "&from=2023-06-17&sortBy=popularity";
         $url .="&apiKey=".$this->api_key;
+
+        $data = new APIController($url);
+        $articles = new FormatAPIController($data, ['title', 'description', 'url', 'urlToImage', 'publishedAt'], $this->fields);
+        return $articles;
+        // $url .= "&from=2023-06-17&sortBy=popularity";
     }
 }
