@@ -11,8 +11,8 @@ final class GetDefaultArticle
      */
     public function __invoke($_, array $args)
     {
-        $article = new ArticleController();
-        $article = $article->getHeadline();
-        return $article;
+        $article = new ArticleController(env('NEWS_API_KEY'));
+        $article->getHeadline();
+        return $article->articles;
     }
 }

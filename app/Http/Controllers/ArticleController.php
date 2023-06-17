@@ -22,11 +22,11 @@ class ArticleController extends Controller
         'description',
         'content',
         'image',
-        'publishedAt',
         'url',
-        'category',
+        'publishedAt',
         'source',
         'source_id',
+        'category',
         'read_later',
         'favorites',
         'already_read',
@@ -39,11 +39,10 @@ class ArticleController extends Controller
 
     public function getHeadline($country = 'us')
     {
-        $url = "https://newsapi.org/v2/top-headlines?" . $country . "=us&apiKey=" . $this->api_key;
-        $data = new APIController($url);
-        $articles = new FormatAPIController($data, ['title', 'description', 'url', 'urlToImage', 'publishedAt'], $this->fields);
-        $this->articles = $articles;
-        // return $articles;
+        $url = "https://newsapi.org/v2/top-headlines?country=" . $country . "&apiKey=" . $this->api_key;
+        $api = new APIController($url);
+        $articles = new FormatAPIController($api->data, ['title', 'description', 'content', 'urlToImage', 'url', 'publishedAt', 'source'], $this->fields);
+        $this->articles = $articles->formatted;
     }
 
     public function getPersonalize(string $type, string $value)
@@ -54,7 +53,7 @@ class ArticleController extends Controller
 
         $data = new APIController($url);
         $articles = new FormatAPIController($data, ['title', 'description', 'url', 'urlToImage', 'publishedAt'], $this->fields);
-        $this->articles = $articles;
+        $this->articles = $articles->formatted;
     }
 
     public function searchArticle(string $search)
