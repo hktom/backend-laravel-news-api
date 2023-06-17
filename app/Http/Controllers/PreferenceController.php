@@ -18,9 +18,10 @@ class PreferenceController extends Controller
         $this->user_id = $auth->me()->id;
     }
 
-    public function addPreference(string $name, string $type, string $folder): Preference
+    public function addPreference(string $name, string $type, int $feed = 0, string $folder = null): Preference
     {
-        $taxonomy = new TaxonomyController($name, $type);
+        $taxonomy = new TaxonomyController();
+        $taxonomy->add($name, $type);
         $folder = new FolderController($folder);
         $preference = Preference::where('user_id', $this->user_id)->where('taxonomy_id', $taxonomy->taxonomy->id)->first();
 
@@ -28,11 +29,16 @@ class PreferenceController extends Controller
             $preference = new Preference();
             $preference->user_id = $this->user_id;
             $preference->taxonomy_id = $taxonomy->taxonomy->id;
-            if ($folder->folder->id) {
-                $preference->folder_id = $folder->folder->id;
-            }
-            $preference->save();
         }
+
+        if ($feed > 0) {
+            $preference->feed_id = $feed;
+        }
+        if ($folder->folder->id) {
+            $preference->folder_id = $folder->folder->id;
+        }
+        $preference->save();
+
         return $preference;
     }
 }
