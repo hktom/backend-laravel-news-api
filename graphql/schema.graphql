@@ -5,7 +5,7 @@ scalar DateTime
 type Query {
     getProfile: Profile @auth @guard
     getDefaultArticle: Article
-    SearchArticle(search:String!): [Article]
+    SearchArticle(search: String!): [Article]
 }
 
 type Mutation {
@@ -14,9 +14,21 @@ type Mutation {
     updatePassword(password: String!, password_confirmation: String!): User
         @guard
 
-    updateUser(name: String!, avatar:String): User @update @guard
+    preference(
+        name: String!
+        type: String!
+        feed: Int
+        folder: Int
+    ): Preference @guard
+
+    updateUser(name: String!, avatar: String): User @update @guard
     saveArticle(input: Article): Article @create @guard
-    updateArticle(id:ID!, already_read:Int, read_later:Int, favorite:Int): Article @update @guard
+    updateArticle(
+        id: ID!
+        already_read: Int
+        read_later: Int
+        favorite: Int
+    ): Article @update @guard
 }
 
 #import type.graphql

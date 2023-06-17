@@ -8,6 +8,7 @@ use App\Models\Preference;
 class PreferenceController extends Controller
 {
     private string $user_id;
+    public Preference $preference;
 
     public function __construct()
     {
@@ -18,7 +19,7 @@ class PreferenceController extends Controller
         $this->user_id = $auth->me()->id;
     }
 
-    public function addPreference(string $name, string $type, int $feed = 0, string $folder = null): Preference
+    public function upsert(string $name, string $type, int $feed = 0, string $folder = null)
     {
         $taxonomy = new TaxonomyController();
         $taxonomy->add($name, $type);
@@ -39,6 +40,6 @@ class PreferenceController extends Controller
         }
         $preference->save();
 
-        return $preference;
+        $this->preference = $preference;
     }
 }
