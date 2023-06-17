@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class APIController extends Controller
 {
-    public array $data;
+    public array $data = [];
 
     public function __construct(string $url)
     {
@@ -24,11 +24,15 @@ class APIController extends Controller
                 CURLOPT_CUSTOMREQUEST => 'GET',
             ));
 
+            // set user agent
+            curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; rv:8.0) Gecko/20100101 Firefox/8.0');
+
             $response = curl_exec($curl);
 
             curl_close($curl);
 
             $news = json_decode($response);
+
             if ($news->status == 'ok' && $news->totalResults > 0) {
                 $this->data = $news->articles;
             }

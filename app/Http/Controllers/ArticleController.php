@@ -19,19 +19,7 @@ class ArticleController extends Controller
 
     public array $field_from = ['title', 'description', 'content', 'urlToImage', 'url', 'publishedAt', 'source'];
 
-    public array $fields = [
-        'title',
-        'description',
-        'content',
-        'image',
-        'url',
-        'publishedAt',
-        'source',
-        'category',
-        'read_later',
-        'favorites',
-        'already_read',
-    ];
+    public array $fields = ['title', 'description', 'content', 'image', 'url', 'publishedAt', 'source'];
 
     public function __construct(string $api_key = '')
     {
@@ -46,14 +34,15 @@ class ArticleController extends Controller
         $this->articles = $articles->formatted;
     }
 
-    public function getPersonalize(string $type, string $value)
+    public function getPersonalize(string $type)
     {
         $url = "https://newsapi.org/v2/top-headlines?";
-        $url .= $type . "=" . $value;
+        $url .= $type;
         $url .= "&apiKey=" . $this->api_key;
 
-        $data = new APIController($url);
-        $articles = new FormatAPIController($data, $this->field_from, $this->fields);
+        // $data = new APIController($url);
+        $api = new APIController($url);
+        $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
         $this->articles = $articles->formatted;
     }
 
@@ -63,8 +52,8 @@ class ArticleController extends Controller
         $url .= "q=" . $search;
         $url .= "&apiKey=" . $this->api_key;
 
-        $data = new APIController($url);
-        $articles = new FormatAPIController($data, $this->field_from, $this->fields);
+        $api = new APIController($url);
+        $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
         $this->articles = $articles->formatted;
         // return $articles;
         // $url .= "&from=2023-06-17&sortBy=popularity";

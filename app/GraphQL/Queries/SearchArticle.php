@@ -15,7 +15,7 @@ final class SearchArticle
         if (!$args['search']) {
             return [];
         }
-        $articles = new ArticleController();
+        $articles = new ArticleController(env('NEWS_API_KEY'));
         $articles->searchArticle($args['search']);
         return $articles->articles;
     }
