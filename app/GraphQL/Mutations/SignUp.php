@@ -30,6 +30,11 @@ final class SignUp
 
         $auth = new AuthController();
         $token = $auth->login($credentials);
-        return $token;
+        // return $token;
+        return [
+            'token' => $token,
+            'status' => $token ? 200 : 401,
+            'error' => $token ? null : 'Unauthorized'
+        ];
     }
 }

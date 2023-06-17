@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Article;
 
 class ArticleController extends Controller
 {
@@ -60,5 +61,12 @@ class ArticleController extends Controller
         $articles = new FormatAPIController($data, ['title', 'description', 'url', 'urlToImage', 'publishedAt'], $this->fields);
         return $articles;
         // $url .= "&from=2023-06-17&sortBy=popularity";
+    }
+
+    public function changeStatus(string $status, string $url){
+        $article = Article::where('url', $url)->first();
+        $article->$status = !$article->$status;
+        $article->save();
+        return $article;
     }
 }
