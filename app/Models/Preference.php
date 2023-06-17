@@ -16,6 +16,7 @@ class Preference extends Model
         'user_id',
         'taxonomy_id',
         'folder_id',
+        'feed'
     ];
 
     /**
