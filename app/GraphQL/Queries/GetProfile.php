@@ -3,6 +3,8 @@
 namespace App\GraphQL\Queries;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\GetUserFeedController;
 use App\Models\Article;
 use App\Models\Setting;
 use App\Models\Preference;
@@ -11,6 +13,7 @@ use App\Models\Folder;
 
 final class GetProfile
 {
+    private array $taxonomies;
     /**
      * @param  null  $_
      * @param  array{}  $args
@@ -18,30 +21,39 @@ final class GetProfile
     public function __invoke($_, array $args)
     {
         $auth = new AuthController();
+        if (!$auth->user_id) {
+            throw new \Exception("User not found", 1);
+        }
 
-        $folders = Folder::where('user_id', $auth->user_id)->get();
-        $taxonomies = Taxonomy::where('user_id', $auth->user_id)->get();
-        $preferences = Preference::where('user_id', $auth->user_id)->get();
+        $this->taxonomies = Taxonomy::where('user_id', $auth->user_id)->get();
         $settings = Setting::where('user_id', $auth->user_id)->get();
 
-        // $sources = $this->getPreferences('source', $auth->user_id);
-        // $categories = $this->getPreferences('category', $auth->user_id);
-        // $authors = $this->getPreferences('author', $auth->user_id);
+        $taxonomies = [];
+        $taxonomies['folder'] = $this->filterTaxonomy('folder');
+        $taxonomies['source'] = $this->filterTaxonomy('source');
+        $taxonomies['category'] = $this->filterTaxonomy('category');
+        $taxonomies['author'] = $this->filterTaxonomy('author');
 
-        $feeds= [];
+        $feeds = new GetUserFeedController($taxonomies);
 
         return [
             'user' => $auth->user,
-            'feed' => [],
+            'feed' => $feeds->articles,
             'settings' => $settings,
-            'preferences' => $preferences,
-            'taxonomies' => $taxonomies,
-            'folders' => $folders
+            ...$taxonomies
         ];
     }
 
-    public function getPreferences(string $type, string $id)
+    public function filterTaxonomy(string $type)
     {
-        return Taxonomy::where('user_id', $id)->where('type', $type)->get()->preferences();
+        $data = [];
+
+        foreach ($this->taxonomies as $taxonomy) {
+            if ($taxonomy->type == $type) {
+                $data[] = $taxonomy;
+            }
+        }
+
+        return $data;
     }
 }
