@@ -4,7 +4,7 @@ namespace App\GraphQL\Queries;
 
 use App\Http\Controllers\ArticleController;
 
-final class Search
+final class SearchArticle
 {
     /**
      * @param  null  $_

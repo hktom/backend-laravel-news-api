@@ -2,10 +2,17 @@
 scalar DateTime
     @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
+scalar DateTimeTz
+    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTimeTz")
+
+# input connectID {
+#     connect: ID!
+# }
+
 type Query {
     getProfile: Profile @auth @guard
-    getDefaultArticle: Article
-    SearchArticle(search: String!): [Article]
+    getDefaultArticle: [Article]!
+    searchArticle(search: String!): [Article]
 }
 
 type Mutation {
@@ -13,22 +20,126 @@ type Mutation {
     signUp(name: String!, email: String!, password: String!): Auth!
     updatePassword(password: String!, password_confirmation: String!): User
         @guard
-
-    preference(
-        name: String!
-        type: String!
-        feed: Int
-        folder: Int
-    ): Preference @guard
-
     updateUser(name: String!, avatar: String): User @update @guard
-    saveArticle(input: Article): Article @create @guard
-    updateArticle(
-        id: ID!
-        already_read: Int
-        read_later: Int
-        favorite: Int
-    ): Article @update @guard
+
+    articleStatus(input: InputArticle! @spread): Article @guard
+    preference(input: InputPreference! @spread): Preference @guard
+    updateArticle(input: InputArticle! @spread): Article @update @guard
 }
 
-#import type.graphql
+input InputArticle {
+    id: ID!
+    already_read: Int
+    read_later: Int
+    favorite: Int
+}
+
+input InputPreference {
+    name: String!
+    type: String!
+    feed: Int
+    folder: Int
+}
+
+input InputArticle {
+    title: String
+    description: String
+    content: String
+    image: String
+    publishedAt: String
+    url: String
+    category: String
+    source: String
+    source_id: String
+    read_later: Int
+    favorites: Int
+    already_read: Int
+}
+
+type User {
+    id: ID
+    name: String!
+    email: String!
+    avatar: String
+    created_at: DateTime
+    updated_at: DateTime
+    folders: [Folder] @hasMany
+    Settings: Setting @hasMany
+    articles: [Article] @hasMany
+    taxonomies: [Taxonomy] @hasMany
+    preferences: [Preference] @hasMany
+}
+
+type Article {
+    id: ID
+    title: String
+    description: String
+    content: String
+    image: String
+    publishedAt: String
+    url: String
+    category: String
+    source: String
+    source_id: String
+    read_later: Int
+    favorites: Int
+    already_read: Int
+    user: User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type Folder {
+    id: ID
+    name: String!
+    user: User @belongsTo
+    preferences: [Preference] @hasMany
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type Preference {
+    id: ID
+    feed: Int!
+    user: User @belongsTo
+    folder: Folder @belongsTo
+    taxonomy: Taxonomy @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type Setting {
+    id: ID
+    user: User @belongsTo
+    disposition: Int
+    dark_mode: Int
+    notification: Int
+    showByPage: Int
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Taxonomy {
+    id: ID
+    name: String!
+    type: String!
+    user: User @belongsTo
+    preferences: [Preference] @hasMany
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type Profile {
+    user: User
+    feed: [Article]
+    folders: [Folder]
+    preferences: [Preference]
+    taxonomies: [Taxonomy]
+    settings: [Setting]
+}
+
+type Auth {
+    status: Int
+    token: String
+    error: String
+}
