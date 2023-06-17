@@ -13,7 +13,7 @@ use App\Models\Folder;
 
 final class GetProfile
 {
-    private array $taxonomies;
+    private $taxonomies;
     /**
      * @param  null  $_
      * @param  array{}  $args
@@ -26,6 +26,7 @@ final class GetProfile
         }
 
         $this->taxonomies = Taxonomy::where('user_id', $auth->user_id)->get();
+
         $settings = Setting::where('user_id', $auth->user_id)->get();
 
         $taxonomies = [];
@@ -35,6 +36,7 @@ final class GetProfile
         $taxonomies['author'] = $this->filterTaxonomy('author');
 
         $feeds = new GetUserFeedController($taxonomies);
+        $feeds->fetch();
 
         return [
             'user' => $auth->user,

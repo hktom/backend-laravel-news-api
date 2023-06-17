@@ -117,7 +117,8 @@ type Taxonomy {
     name: String!
     type: String!
     user: User @belongsTo
-    preferences: [Preference] @hasMany
+    parent: Taxonomy @belongsTo
+    children: [Taxonomy] @hasMany
     created_at: DateTime
     updated_at: DateTime
 }

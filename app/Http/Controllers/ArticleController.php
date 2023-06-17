@@ -13,13 +13,9 @@ class ArticleController extends Controller
     public array $articles;
     public object $article;
 
-    // public string $sources;
-    // public string $categories;
-    // public string $authors;
+    public array $field_from = ['title', 'description', 'content', 'urlToImage', 'url', 'publishedAt', 'source', 'author', 'category'];
 
-    public array $field_from = ['title', 'description', 'content', 'urlToImage', 'url', 'publishedAt', 'source'];
-
-    public array $fields = ['title', 'description', 'content', 'image', 'url', 'publishedAt', 'source'];
+    public array $fields = ['title', 'description', 'content', 'image', 'url', 'publishedAt', 'source', 'author_name', 'category_name'];
 
     public function __construct(string $api_key = '')
     {
