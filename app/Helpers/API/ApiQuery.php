@@ -7,48 +7,14 @@ use App\Helpers\Interfaces\ApiQueryInterface;
 class ApiQuery implements ApiQueryInterface
 {
 
-    private array $categories;
-    private array $sources;
-    private array $authors;
-    public array $queries;
+    public array $queries = [];
+    public string $type = '';
 
-    public function __construct()
+    public function __construct(){}
+
+    public function setQueries(string $type, array $queries)
     {
-        $this->categories = [];
-        $this->sources = [];
-        $this->authors = [];
-        $this->queries = [];
+        $this->type = $type;
+        $this->queries[$type] = implode(',', $queries);
     }
-
-    // setter
-    public function setCategories(array $categories)
-    {
-        $this->categories = $categories;
-    }
-
-    public function setSources(array $sources)
-    {
-        $this->sources = $sources;
-    }
-
-    public function setAuthors(array $authors)
-    {
-        $this->authors = $authors;
-    }
-
-    // public function setSearch(string $search)
-    // {
-    //     $this->search = $search;
-    // }
-
-    public function getQuery()
-    {
-        $this->queries = [
-            'category' => implode(',', $this->categories),
-            'sources' => implode(',', $this->sources),
-            'authors' => implode(',', $this->authors),
-            // 'search' => $this->search,
-        ];
-    }
-
 }

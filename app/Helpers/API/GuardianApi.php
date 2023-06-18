@@ -6,7 +6,7 @@ namespace App\Helpers\API;
 use App\Helpers\Interfaces\ApiInterface;
 use App\Helpers\Interfaces\FetchInterface;
 use App\Helpers\Interfaces\ApiFormatterInterface;
-
+use App\Helpers\Interfaces\ApiQueryInterface;
 
 class GuardianApi implements ApiInterface
 {
@@ -36,10 +36,18 @@ class GuardianApi implements ApiInterface
         }
     }
 
-    public function userFeed(string $type)
+    public function userFeed(ApiQueryInterface $apiQuery)
     {
         $url = "https://content.guardianapis.com/search?show-fields=thumbnail,productionOffice&api-key=";
-        $url .= $type;
+        
+        if ($apiQuery->queries['category']) {
+            $url .= "section=" . urlencode(explode(',', $apiQuery->queries['category'])[0]);
+        }
+
+        if ($apiQuery->queries['author']) {
+            $url .= "reference=" . urlencode(explode(',', $apiQuery->queries['author'])[0]);
+        }
+
         $url .= "&api-key=" . $this->api_key;
 
         $this->fetch->get($url);

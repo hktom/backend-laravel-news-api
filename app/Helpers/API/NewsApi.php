@@ -5,6 +5,7 @@ namespace App\Helpers\API;
 use App\Helpers\Interfaces\ApiInterface;
 use App\Helpers\Interfaces\FetchInterface;
 use App\Helpers\Interfaces\ApiFormatterInterface;
+use App\Helpers\Interfaces\ApiQueryInterface;
 
 class NewsApi implements ApiInterface
 {
@@ -35,10 +36,19 @@ class NewsApi implements ApiInterface
         }
     }
 
-    public function userFeed(string $type)
+    public function userFeed(ApiQueryInterface $apiQuery)
     {
-        $url = "https://newsapi.org/v2/top-headlines?";
-        $url .= $type;
+        $url = "https://newsapi.org/v2/everything?";
+
+        if ($apiQuery->queries['source']) {
+            $url .= "sources=" . $apiQuery->queries['source'];
+        }
+
+        if ($apiQuery->queries['author']) {
+            $url .= "q=" . urlencode($apiQuery->queries['author']);
+            $url .= "searchIn=author";
+        }
+
         $url .= "&apiKey=" . $this->api_key;
 
         $this->fetch->get($url);

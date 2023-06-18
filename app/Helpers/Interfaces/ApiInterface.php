@@ -8,7 +8,7 @@ interface ApiInterface
 
     public function headlines();
 
-    public function userFeed(string $params);
+    public function userFeed(ApiQueryInterface $apiQuery);
 
     public function search(string $params);
 
