@@ -127,11 +127,10 @@ type Taxonomy {
 type Profile {
     user: User
     feed: [Article]
-    categories: [Taxonomy]
-    authors: [Taxonomy]
-    sources: [Taxonomy]
-    folders: [Taxonomy]
+    Taxonomies: [Taxonomy]
     settings: [Setting]
+    filterBy: String
+    filters: String,
 }
 
 type Auth {

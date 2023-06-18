@@ -6,7 +6,7 @@ namespace App\Helpers\API;
 use App\Helpers\Interfaces\ApiInterface;
 use App\Helpers\Interfaces\FetchInterface;
 use App\Helpers\Interfaces\ApiFormatterInterface;
-
+use App\Helpers\Interfaces\ApiQueryInterface;
 
 class GuardianApi implements ApiInterface
 {
@@ -27,8 +27,7 @@ class GuardianApi implements ApiInterface
 
     public function headlines()
     {
-        $url = "https://content.guardianapis.com/search?show-fields=thumbnail,productionOffice&api-key=" . $this->api_key;
-        // $url .= "&show-fields=thumbnail, productionOffice&order-by=newest";
+        $url = "https://content.guardianapis.com/search?show-fields=thumbnail&api-key=" . $this->api_key;
 
         $this->fetch->get($url);
         if ($this->fetch->response->response->status == "ok") {
@@ -36,10 +35,19 @@ class GuardianApi implements ApiInterface
         }
     }
 
-    public function userFeed(string $type)
+    public function userFeed(ApiQueryInterface $apiQuery)
     {
-        $url = "https://content.guardianapis.com/search?show-fields=thumbnail,productionOffice&api-key=";
-        $url .= $type;
+        $url = "https://content.guardianapis.com/search?show-fields=thumbnail&";
+
+
+        if ($apiQuery->type == 'category' && $apiQuery->queries) {
+            $url .= "section=" . urlencode(explode(',', $apiQuery->queries)[0]);
+        } else if ($apiQuery->type == 'author' && $apiQuery->queries) {
+            $url .= "reference=" . urlencode(explode(',', $apiQuery->queries)[0]);
+        } else {
+            return;
+        }
+
         $url .= "&api-key=" . $this->api_key;
 
         $this->fetch->get($url);
@@ -51,11 +59,11 @@ class GuardianApi implements ApiInterface
     public function search(string $search)
     {
         $url = "https://content.guardianapis.com/search?show-fields=thumbnail,productionOffice";
-        $url .= "q=" . $search;
+        $url .= "&q=" . $search;
         $url .= "&api-key=" . $this->api_key;
 
         $this->fetch->get($url);
-        if ($this->fetch->response->response->status == "ok") {
+        if ($this->fetch->response->response && $this->fetch->response->response->status == "ok") {
             $this->data = $this->fetch->response->response->results;
         }
     }
@@ -72,11 +80,12 @@ class GuardianApi implements ApiInterface
             $apiFormatter->setSourceName($object->pillarName);
             $apiFormatter->setCategoryName($object->sectionName);
             $apiFormatter->setCategoryId($object->sectionId);
-            $formatted[$index] = $apiFormatter->getAllPropertiesAsObject();
 
             if ($object->fields && is_object($object->fields)) {
                 $apiFormatter->setImage($object->fields->thumbnail);
             }
+
+            $formatted[$index] = $apiFormatter->getAllPropertiesAsObject();
             $apiFormatter->reset();
         }
 

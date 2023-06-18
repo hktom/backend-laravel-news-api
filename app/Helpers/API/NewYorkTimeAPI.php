@@ -5,6 +5,7 @@ namespace App\Helpers\API;
 use App\Helpers\Interfaces\ApiInterface;
 use App\Helpers\Interfaces\FetchInterface;
 use App\Helpers\Interfaces\ApiFormatterInterface;
+use App\Helpers\Interfaces\ApiQueryInterface;
 
 class NewYorkTimeApi implements ApiInterface
 {
@@ -33,10 +34,18 @@ class NewYorkTimeApi implements ApiInterface
         }
     }
 
-    public function userFeed(string $type)
+    public function userFeed(ApiQueryInterface $apiQuery)
     {
         $url = "https://api.nytimes.com/svc/search/v2/articlesearch.json?";
-        $url .= $type;
+
+        if ($apiQuery->queries == 'source' && $apiQuery->queries) {
+            $url .= "fq=source:(" . urlencode(explode(',', $apiQuery->queries)[0]) . ")";
+        } else if ($apiQuery->queries == 'category' && $apiQuery->queries) {
+            $url .= "fq=news_desk:(" . urlencode($apiQuery->queries) . ")";
+        } else {
+            return;
+        }
+
         $url .= "&api-key=" . $this->api_key;
 
         $this->fetch->get($url);
