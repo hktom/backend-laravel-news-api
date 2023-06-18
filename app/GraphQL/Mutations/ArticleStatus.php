@@ -2,7 +2,8 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Http\Controllers\ArticleStatusController;
+use App\Helpers\Authentication;
+use App\Helpers\ArticleUpdater;
 
 final class ArticleStatus
 {
@@ -12,8 +13,9 @@ final class ArticleStatus
      */
     public function __invoke($_, array $args)
     {
-        $article = new ArticleStatusController();
-        $article->toggle($args);
+        $user = new Authentication();
+        $article = new ArticleUpdater();
+        $article->upsert($args, $user->user_id);
         return $article->article;
     }
 }

@@ -5,7 +5,7 @@ namespace App\Helpers;
 use App\Models\Article;
 use App\Helpers\Interfaces\ArticleInterface;
 
-class ArticleStatus implements ArticleInterface
+class ArticleUpdater implements ArticleInterface
 {
     public Article $article;
 

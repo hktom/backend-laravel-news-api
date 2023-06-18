@@ -2,7 +2,8 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Http\Controllers\TaxonomyController;
+use App\Helpers\Authentication;
+use App\Helpers\TaxonomyUpdater;
 
 final class TaxonomyUpsert
 {
@@ -12,8 +13,9 @@ final class TaxonomyUpsert
      */
     public function __invoke($_, array $args)
     {
-        $taxonomy = new TaxonomyController();
-        $taxonomy->upsert($args['name'], $args['type'], isset($args['parent_id']) ? $args['parent_id'] : null);
+        $user = new Authentication();
+        $taxonomy = new TaxonomyUpdater($user->user_id);
+        $taxonomy->upsert($args, isset($args['parent_id']) ? $args['parent_id'] : null);
         return $taxonomy->taxonomy;
     }
 }

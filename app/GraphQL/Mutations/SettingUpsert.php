@@ -2,7 +2,8 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Http\Controllers\SettingController;
+use App\Helpers\Authentication;
+use App\Helpers\SettingUpdater;
 
 final class SettingUpsert
 {
@@ -12,7 +13,9 @@ final class SettingUpsert
      */
     public function __invoke($_, array $args)
     {
-        $setting = new SettingController();
+        $user = new Authentication();
+        $setting = new SettingUpdater($user->user_id);
+        
         $setting->upsert($args);
         return $setting->setting;
     }

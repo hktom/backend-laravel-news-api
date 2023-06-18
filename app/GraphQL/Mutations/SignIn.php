@@ -2,7 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Http\Controllers\AuthController;
+use App\Helpers\Authentication;
 
 final class SignIn
 {
@@ -17,8 +17,9 @@ final class SignIn
             'password' => $args['password'],
         ];
 
-        $auth = new AuthController();
+        $auth = new Authentication();
         $auth->login($credentials);
+        
         return [
             'token' => $auth->token,
             'status' => $auth->token ? 200 : 401,
