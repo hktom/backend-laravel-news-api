@@ -2,8 +2,6 @@
 
 namespace App\GraphQL\Queries;
 
-use App\Http\Controllers\ArticleController;
-
 use App\Helpers\API\NewsAPI;
 use App\Helpers\API\NewYorkTimeAPI;
 use App\Helpers\API\GuardianApi;

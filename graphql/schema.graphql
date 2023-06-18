@@ -10,8 +10,7 @@ scalar DateTimeTz
 # }
 
 type Query {
-    getProfile: Profile @guard
-    getDefaultArticle: [Article]!
+    home: Profile
     searchArticle(search: String!): [Article]
 }
 
