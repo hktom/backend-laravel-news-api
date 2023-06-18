@@ -40,7 +40,7 @@ class GuardianApi implements ApiInterface
     {
         $url = "https://content.guardianapis.com/search?api-key=" . $this->api_key;
         $this->fetch->get($url);
-        if ($this->fetch->response->status == "ok") {
+        if ($this->fetch->response->response->status == "ok") {
             $this->data = $this->fetch->response->response->results;
         }
     }
@@ -52,7 +52,7 @@ class GuardianApi implements ApiInterface
         $url .= "&api-key=" . $this->api_key;
 
         $this->fetch->get($url);
-        if ($this->fetch->response->status == "ok") {
+        if ($this->fetch->response->response->status == "ok") {
             $this->data = $this->fetch->response->response->results;
         }
     }
@@ -64,7 +64,7 @@ class GuardianApi implements ApiInterface
         $url .= "&api-key=" . $this->api_key;
 
         $this->fetch->get($url);
-        if ($this->fetch->response->status == "ok") {
+        if ($this->fetch->response->response->status == "ok") {
             $this->data = $this->fetch->response->response->results;
         }
     }
@@ -79,7 +79,7 @@ class GuardianApi implements ApiInterface
                     continue;
                 }
 
-                if ($key == 'fields' && count($value) > 0) {
+                if ($key == 'fields' && is_object($value)) {
                     $formatted[$index]['image'] = $value->thumbnail;
                 } else {
                     $formatted[$index][$format_fields[array_search($key, $this->api_data_key)]] = $value;
