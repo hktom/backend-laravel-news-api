@@ -65,13 +65,13 @@ class GuardianApi implements ApiInterface
         $formatted = [];
 
         foreach ($this->data as $index => $object) {
-            $apiFormatter->setTitle(isset($object->webTitle) ?: '');
-            $apiFormatter->setUrl(isset($object->webUrl) ?: '');
-            $apiFormatter->setPublishedAt(isset($object->webPublicationDate) ?: '');
-            $apiFormatter->setSourceId(isset($object->pillarId) ?: '');
-            $apiFormatter->setSourceName(isset($object->pillarName) ?: '');
-            $apiFormatter->setCategoryName(isset($object->sectionName) ?: '');
-            $apiFormatter->setCategoryId(isset($object->sectionId) ?: '');
+            $apiFormatter->setTitle($object->webTitle);
+            $apiFormatter->setUrl($object->webUrl);
+            $apiFormatter->setPublishedAt($object->webPublicationDate);
+            $apiFormatter->setSourceId($object->pillarId);
+            $apiFormatter->setSourceName($object->pillarName);
+            $apiFormatter->setCategoryName($object->sectionName);
+            $apiFormatter->setCategoryId($object->sectionId);
             $formatted[$index] = $apiFormatter->getAllPropertiesAsObject();
 
             if ($object->fields && is_object($object->fields)) {

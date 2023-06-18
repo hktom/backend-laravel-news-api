@@ -17,8 +17,6 @@ class NewYorkTimeApi implements ApiInterface
 
     private FetchInterface $fetch;
 
-    private array $api_data_key;
-
 
     public function __construct(FetchInterface $fetch)
     {
@@ -64,16 +62,19 @@ class NewYorkTimeApi implements ApiInterface
         $formatted = [];
 
         foreach ($this->data as $index => $object) {
-            $formatter->setDescription(isset($object->abstract) ?: '');
-            $formatter->setContent(isset($object->lead_paragraph) ?: '');
-            $formatter->setUrl(isset($object->web_url) ?: '');
-            $formatter->setPublishedAt(isset($object->pub_date) ?: '');
-            $formatter->setSourceName(isset($object->source) ?: '');
-            $formatter->setCategoryName(isset($object->section_name) ?: '');
+
+            $formatter->setContent($object->lead_paragraph);
+            $formatter->setDescription($object->abstract);
+            $formatter->setUrl($object->web_url);
+            $formatter->setPublishedAt($object->pub_date);
+            $formatter->setSourceName($object->source);
+            $formatter->setCategoryName($object->section_name);
 
             if ($object->headline && is_object($object->headline)) {
                 $formatter->setTitle($object->headline->main);
             }
+
+
 
             if (count($object->multimedia) > 0) {
                 $formatter->setImage("https://www.nytimes.com/" . $object->multimedia[0]->url);

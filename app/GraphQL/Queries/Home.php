@@ -16,20 +16,6 @@ use App\Models\Taxonomy;
 
 final class Home
 {
-    // public array $article_schema = [
-    //     'title',
-    //     'description',
-    //     'content',
-    //     'image',
-    //     'url',
-    //     'publishedAt',
-    //     'source_id',
-    //     'source_name',
-    //     'author_id',
-    //     'author_name',
-    //     'category_id',
-    //     'category_name'
-    // ];
 
     public $taxonomies;
 

@@ -74,8 +74,8 @@ class NewsApi implements ApiInterface
             $formatter->setSourceName($object->source->name ?: '');
             $formatter->setAuthorId($object->author ?: '');
             $formatter->setAuthorName($object->author ?: '');
-            $formatter->setCategoryId(isset($object->category) ?: '');
-            $formatter->setCategoryName(isset($object->category) ?: '');
+            // $formatter->setCategoryId(isset($object->category) ?: '');
+            // $formatter->setCategoryName(isset($object->category) ?: '');
             $formatted[$index] = $formatter->getAllPropertiesAsObject();
             $formatter->reset();
         }
