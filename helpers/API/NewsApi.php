@@ -2,10 +2,8 @@
 
 namespace App\Helpers\API;
 
-// use App\Models\Article;
 use App\Helpers\Interfaces\ApiInterface;
 use App\Helpers\Interfaces\FetchInterface;
-// use App\Helpers\Interfaces\ReducerInterface;
 
 class NewsApi implements ApiInterface
 {
@@ -14,13 +12,11 @@ class NewsApi implements ApiInterface
 
     private FetchInterface $fetch;
 
-    // private ReducerInterface $reducer;
+    private array $api_data_key;
 
-    public object $data;
+    public array $data = [];
 
-    // private array $field_from;
-
-    // private array $field;
+    public array $formatted = [];
 
 
     public function __construct(FetchInterface $fetch)
@@ -28,7 +24,17 @@ class NewsApi implements ApiInterface
         $this->api_key = env('NEWS_API_KEY');
         $this->fetch = $fetch;
 
-        // $this->field_from =  ['title', 'description', 'content', 'urlToImage', 'url', 'publishedAt', 'source', 'author', 'category'];
+        $this->api_data_key =  [
+            'title',
+            'description',
+            'content',
+            'urlToImage',
+            'url',
+            'publishedAt',
+            'source',
+            'author',
+            'category'
+        ];
         // $this->field = ['title', 'description', 'content', 'image', 'url', 'publishedAt', 'source', 'author_name', 'category_name'];
         // $this->reducer = $reducer;
     }
@@ -37,9 +43,9 @@ class NewsApi implements ApiInterface
     {
         $url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=" . $this->api_key;
         $this->fetch->get($url);
-        $this->data = $this->fetch->response;
-        // $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
-        // $this->articles = $articles->formatted;
+        if ($this->fetch->status == "ok") {
+            $this->data = $this->fetch->articles;
+        }
     }
 
     public function userFeed(string $type)
@@ -49,10 +55,9 @@ class NewsApi implements ApiInterface
         $url .= "&apiKey=" . $this->api_key;
 
         $this->fetch->get($url);
-        $this->data = $this->fetch->response;
-        // $data = new APIController($url);
-        // $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
-        // $this->articles = $articles->formatted;
+        if ($this->fetch->status == "ok") {
+            $this->data = $this->fetch->articles;
+        }
     }
 
     public function search(string $search)
@@ -62,12 +67,30 @@ class NewsApi implements ApiInterface
         $url .= "&apiKey=" . $this->api_key;
 
         $this->fetch->get($url);
-        $this->data = $this->fetch->response;
+        if ($this->fetch->status == "ok") {
+            $this->data = $this->fetch->articles;
+        }
+    }
 
-        // $api = $this->fetch->get($url);
-        // $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
-        // $this->articles = $articles->formatted;
-        // return $articles;
-        // $url .= "&from=2023-06-17&sortBy=popularity";
+    public function format(array $format_fields)
+    {
+        $formatted = [];
+
+        foreach ($this->data as $index => $object) {
+            foreach ($object as $key => $value) {
+                if (!in_array($key, $this->api_data_key)) {
+                    continue;
+                }
+                if (!is_object($value)) {
+                    $formatted[$index][$format_fields[array_search($key, $this->api_data_key)]] = $value;
+                } else {
+                    foreach ($value as $key3 => $value3) {
+                        $formatted[$index][$format_fields[array_search($key, $this->api_data_key)] . "_" . $key3] = $value3;
+                    }
+                }
+            }
+        }
+
+        $this->formatted = $formatted;
     }
 }
