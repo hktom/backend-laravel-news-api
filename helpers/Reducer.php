@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-class Reducer
+use App\Helpers\Interfaces\ReducerInterface;
+
+class Reducer implements ReducerInterface
 {
     public array $data;
 

@@ -33,7 +33,8 @@ class Fetch
 
             curl_close($curl);
 
-            $this->response = $response;
+            $this->response = json_decode($response);
+            
         } catch (\Throwable $th) {
             throw $th;
         }

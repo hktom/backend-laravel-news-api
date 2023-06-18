@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Helpers;
+
 use App\Models\Article;
 use App\Helpers\Interfaces\ApiInterface;
 use App\Helpers\Interfaces\FetchInterface;
+use App\Helpers\Interfaces\ReducerInterface;
 
 class NewsApi implements ApiInterface
 {
@@ -12,9 +14,9 @@ class NewsApi implements ApiInterface
 
     private FetchInterface $fetch;
 
-    public array $articles;
+    // private ReducerInterface $reducer;
 
-    public object $article;
+    public object $data;
 
     public array $field_from;
 
@@ -27,14 +29,16 @@ class NewsApi implements ApiInterface
         $this->field_from =  ['title', 'description', 'content', 'urlToImage', 'url', 'publishedAt', 'source', 'author', 'category'];
         $this->field = ['title', 'description', 'content', 'image', 'url', 'publishedAt', 'source', 'author_name', 'category_name'];
         $this->fetch = $fetch;
+        // $this->reducer = $reducer;
     }
 
     public function headlines()
     {
         $url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=" . $this->api_key;
-        $api = $this->fetch->get($url);
-        $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
-        $this->articles = $articles->formatted;
+        $this->fetch->get($url);
+        $this->data = $this->fetch->response;
+        // $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
+        // $this->articles = $articles->formatted;
     }
 
     public function userFeed(string $type)
@@ -43,10 +47,11 @@ class NewsApi implements ApiInterface
         $url .= $type;
         $url .= "&apiKey=" . $this->api_key;
 
+        $this->fetch->get($url);
+        $this->data = $this->fetch->response;
         // $data = new APIController($url);
-        $api = $this->fetch->get($url);
-        $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
-        $this->articles = $articles->formatted;
+        // $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
+        // $this->articles = $articles->formatted;
     }
 
     public function search(string $search)
@@ -55,9 +60,12 @@ class NewsApi implements ApiInterface
         $url .= "q=" . $search;
         $url .= "&apiKey=" . $this->api_key;
 
-        $api = $this->fetch->get($url);
-        $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
-        $this->articles = $articles->formatted;
+        $this->fetch->get($url);
+        $this->data = $this->fetch->response;
+
+        // $api = $this->fetch->get($url);
+        // $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
+        // $this->articles = $articles->formatted;
         // return $articles;
         // $url .= "&from=2023-06-17&sortBy=popularity";
     }
