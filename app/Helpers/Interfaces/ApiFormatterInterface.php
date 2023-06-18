@@ -20,4 +20,5 @@ interface ApiFormatterInterface
     public function setCategoryId(string $category_id): void;
     public function setCategoryName(string $category_name): void;
     public function getAllPropertiesAsObject(): object;
+    public function reset(): void;
 }

@@ -113,4 +113,20 @@ class ApiFormatter implements ApiFormatterInterface
             'category_name' => $this->category_name
         ];
     }
+
+    public function reset(): void
+    {
+        $this->title = '';
+        $this->description = '';
+        $this->content = '';
+        $this->image = '';
+        $this->url = '';
+        $this->publishedAt = '';
+        $this->source_id = '';
+        $this->source_name = '';
+        $this->author_id = '';
+        $this->author_name = '';
+        $this->category_id = '';
+        $this->category_name = '';
+    }
 }

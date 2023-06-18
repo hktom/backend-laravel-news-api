@@ -5,6 +5,7 @@ namespace App\Helpers\API;
 
 use App\Helpers\Interfaces\ApiInterface;
 use App\Helpers\Interfaces\FetchInterface;
+use App\Helpers\Interfaces\ApiFormatterInterface;
 
 
 class GuardianApi implements ApiInterface
@@ -25,15 +26,15 @@ class GuardianApi implements ApiInterface
     {
         $this->api_key = env('GUARDIAN_API_KEY');
         $this->fetch = $fetch;
-        $this->api_data_key = [
-            "webTitle",
-            "webUrl",
-            "fields",
-            "pillarId",
-            "pillarName",
-            "sectionId",
-            "sectionName"
-        ];
+        // $this->api_data_key = [
+        //     "webTitle",
+        //     "webUrl",
+        //     "fields",
+        //     "pillarId",
+        //     "pillarName",
+        //     "sectionId",
+        //     "sectionName"
+        // ];
     }
 
     public function headlines()
@@ -71,23 +72,35 @@ class GuardianApi implements ApiInterface
         }
     }
 
-    public function format(array $format_fields)
+    public function format(ApiFormatterInterface $apiFormatter)
     {
         $formatted = [];
 
-        foreach ($this->data as $index => $object) {
-            foreach ($object as $key => $value) {
-                if (!in_array($key, $this->api_data_key)) {
-                    continue;
-                }
-
-                if ($key == 'fields' && is_object($value)) {
-                    $formatted[$index]['image'] = $value->thumbnail;
-                } else {
-                    $formatted[$index][$format_fields[array_search($key, $this->api_data_key)]] = $value;
-                }
-            }
+        foreach($this->data as $index=>$object){
+            $apiFormatter->setTitle($object->webTitle);
+            $apiFormatter->setUrl($object->webUrl);
+            $apiFormatter->setImage($object->fields->thumbnail);
+            $apiFormatter->setPublishedAt($object->webPublicationDate);
+            $apiFormatter->setSourceName($object->pillarName);
+            $apiFormatter->setCategoryName($object->sectionName);
+            $apiFormatter->setCategoryId($object->sectionId);
+            $formatted[$index] = $apiFormatter->getAllPropertiesAsObject();
+            $apiFormatter->reset();
         }
+
+        // foreach ($this->data as $index => $object) {
+        //     foreach ($object as $key => $value) {
+        //         if (!in_array($key, $this->api_data_key)) {
+        //             continue;
+        //         }
+
+        //         if ($key == 'fields' && is_object($value)) {
+        //             $formatted[$index]['image'] = $value->thumbnail;
+        //         } else {
+        //             $formatted[$index][$format_fields[array_search($key, $this->api_data_key)]] = $value;
+        //         }
+        //     }
+        // }
 
         $this->formatted = $formatted;
     }
