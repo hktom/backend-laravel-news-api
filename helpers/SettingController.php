@@ -1,22 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Helpers;
 
-use Illuminate\Http\Request;
 use App\Models\Setting;
 
-class SettingController extends Controller
+class SettingUpdater
 {
     private string $user_id;
     public Setting $setting;
 
-    public function __construct()
+    public function __construct(string $user_id)
     {
-        $auth = new AuthController();
-        if (!$auth->user_id) {
-            throw new \Exception("User not found", 1);
-        }
-        $this->user_id = $auth->user_id;
+        $this->user_id = $user_id;
     }
 
     public function upsert(array $fields)

@@ -1,53 +1,33 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Helpers;
 
-use Illuminate\Http\Request;
 use App\Models\Taxonomy;
 
-class TaxonomyController extends Controller
+class TaxonomyUpdater
 {
     private string $user_id;
     public Taxonomy $taxonomy;
 
-    public function __construct()
+    public function __construct(string $user_id)
     {
-        $auth = new AuthController();
-        if (!$auth->user_id) {
-            throw new \Exception("User not found", 1);
-        }
-        $this->user_id = $auth->user_id;
+        $this->user_id = $user_id;
     }
 
-    public function upsert(string $name, string $type, string $parent_id = null)
+    public function upsert(array $args, string $parent_id = null)
     {
 
-        $taxonomy = Taxonomy::where('name', $name)->where('type', $type)->where('parent_id', $parent_id)->where('user_id', $this->user_id)->first();
+        $taxonomy = Taxonomy::where('name', $args['name'])->where('type', $args['type'])->where('parent_id', $parent_id)->where('user_id', $this->user_id)->first();
         if (!$taxonomy) {
             $taxonomy = new Taxonomy();
             $taxonomy->user_id = $this->user_id;
         }
 
-        $taxonomy->name = $name;
-        $taxonomy->type = $type;
-        $taxonomy->parent_id = $parent_id;
+        foreach ($args as $key => $value) {
+            $taxonomy->$key = $value;
+        }
+
         $taxonomy->save();
         $this->taxonomy = $taxonomy;
     }
-
-    // public function upsert(string $status, string $url, array $fields = [])
-    // {
-    //     $taxonomy = Taxonomy::where('url', $url)->first();
-    //     if (!$taxonomy) {
-    //         $taxonomy = new Taxonomy();
-    //         foreach ($fields as $key => $value) {
-    //             $taxonomy->$key = $value;
-    //         }
-    //     } else {
-    //         $taxonomy->$status = !$taxonomy->$status;
-    //     }
-
-    //     $taxonomy->save();
-    //     return $taxonomy;
-    // }
 }

@@ -12,7 +12,6 @@ class Authentication implements AuthInterface
 
     public function __construct()
     {
-        // $this->middleware('auth:api', ['except' => ['login']]);
         if (auth()->user()) {
             $this->user_id = auth()->user()->id;
             $this->user = auth()->user();
