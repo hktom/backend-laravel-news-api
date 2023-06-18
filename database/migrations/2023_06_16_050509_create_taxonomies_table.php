@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('taxonomies', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('slug')->nullable();
             $table->string('name');
             $table->string('type');
             $table->uuid('user_id');
