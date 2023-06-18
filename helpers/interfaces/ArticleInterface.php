@@ -2,9 +2,11 @@
 
 namespace App\Helpers\Interfaces;
 
-use App\Models\Article;
-
 interface ArticleInterface
 {
     public function __construct();
+
+    // public function user();
+
+    // public function upsert(array $fields = [], string $user_id);
 }
