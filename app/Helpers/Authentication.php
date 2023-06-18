@@ -7,8 +7,8 @@ class Authentication implements AuthInterface
 {
 
     public string $token;
-    public $user;
-    public string $user_id;
+    public $user = null;
+    public string $user_id = '';
 
     public function __construct()
     {

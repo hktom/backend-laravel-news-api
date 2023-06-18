@@ -4,7 +4,7 @@ namespace App\Helpers\Interfaces;
 
 interface ApiInterface
 {
-    public function __construct(FetchInterface $fetch, ReducerInterface $reducer);
+    public function __construct(FetchInterface $fetch);
 
     public function headlines();
 

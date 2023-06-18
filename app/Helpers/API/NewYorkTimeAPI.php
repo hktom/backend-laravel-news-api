@@ -21,7 +21,7 @@ class NewYorkTimeApi implements ApiInterface
 
     public function __construct(FetchInterface $fetch)
     {
-        $this->api_key = env('NEWS_API_KEY');
+        $this->api_key = env('NEW_YORK_TIME_API_KEY');
         $this->fetch = $fetch;
         $this->api_data_key = [
             'headline',
@@ -41,7 +41,7 @@ class NewYorkTimeApi implements ApiInterface
         $url = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=" . $this->api_key;
         $this->fetch->get($url);
         if ($this->fetch->response->status == "OK") {
-            $this->data = $this->fetch->response->docs;
+            $this->data = $this->fetch->response->response->docs;
         }
     }
 
@@ -53,7 +53,7 @@ class NewYorkTimeApi implements ApiInterface
 
         $this->fetch->get($url);
         if ($this->fetch->response->status == "OK") {
-            $this->data = $this->fetch->response->docs;
+            $this->data = $this->fetch->response->response->docs;
         }
     }
 
@@ -65,7 +65,7 @@ class NewYorkTimeApi implements ApiInterface
 
         $this->fetch->get($url);
         if ($this->fetch->response->status == "OK") {
-            $this->data = $this->fetch->response->docs;
+            $this->data = $this->fetch->response->response->docs;
         }
     }
 
@@ -81,7 +81,7 @@ class NewYorkTimeApi implements ApiInterface
 
                 if ($key == 'multimedia' && count($value) > 0) {
                     $formatted[$index]['image'] = $value[0]->url;
-                } else if ($key == 'headline' && count($value) > 0) {
+                } else if ($key == 'headline' && is_object($value)) {
                     $formatted[$index]['title'] = $value->main;
                 } else {
                     $formatted[$index][$format_fields[array_search($key, $this->api_data_key)]] = $value;

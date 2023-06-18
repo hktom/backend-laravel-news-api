@@ -43,8 +43,8 @@ class NewsApi implements ApiInterface
     {
         $url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=" . $this->api_key;
         $this->fetch->get($url);
-        if ($this->fetch->status == "ok") {
-            $this->data = $this->fetch->articles;
+        if ($this->fetch->response->status == "ok") {
+            $this->data = $this->fetch->response->articles;
         }
     }
 
@@ -55,8 +55,8 @@ class NewsApi implements ApiInterface
         $url .= "&apiKey=" . $this->api_key;
 
         $this->fetch->get($url);
-        if ($this->fetch->status == "ok") {
-            $this->data = $this->fetch->articles;
+        if ($this->fetch->response->status == "ok") {
+            $this->data = $this->fetch->response->articles;
         }
     }
 
@@ -67,8 +67,8 @@ class NewsApi implements ApiInterface
         $url .= "&apiKey=" . $this->api_key;
 
         $this->fetch->get($url);
-        if ($this->fetch->status == "ok") {
-            $this->data = $this->fetch->articles;
+        if ($this->fetch->response->status == "ok") {
+            $this->data = $this->fetch->response->articles;
         }
     }
 
