@@ -11,4 +11,6 @@ interface ApiInterface
     public function userFeed(string $params);
 
     public function search(string $params);
+
+    public function format(array $format_fields);
 }
