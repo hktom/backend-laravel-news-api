@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Helpers;
 
-use Illuminate\Http\Request;
-
-class APIController extends Controller
+class Fetch
 {
-    public array $data = [];
+    public $response = [];
 
-    public function __construct(string $url)
+    public function __construct()
+    {
+    }
+
+    public function get(string $url)
     {
         try {
             $curl = curl_init();
@@ -31,11 +33,7 @@ class APIController extends Controller
 
             curl_close($curl);
 
-            $news = json_decode($response);
-
-            if ($news->status == 'ok' && $news->totalResults > 0) {
-                $this->data = $news->articles;
-            }
+            $this->response = $response;
         } catch (\Throwable $th) {
             throw $th;
         }

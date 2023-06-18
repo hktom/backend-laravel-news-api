@@ -1,54 +1,61 @@
 <?php
 
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
+namespace App\Helpers;
 use App\Models\Article;
+use App\Helpers\Interfaces\ApiInterface;
+use App\Helpers\Interfaces\FetchInterface;
 
-class ArticleController extends Controller
+class NewsApi implements ApiInterface
 {
 
     private $api_key;
 
+    private FetchInterface $fetch;
+
     public array $articles;
+
     public object $article;
 
-    public array $field_from = ['title', 'description', 'content', 'urlToImage', 'url', 'publishedAt', 'source', 'author', 'category'];
+    public array $field_from;
 
-    public array $fields = ['title', 'description', 'content', 'image', 'url', 'publishedAt', 'source', 'author_name', 'category_name'];
+    public array $field;
 
-    public function __construct(string $api_key = '')
+
+    public function __construct(FetchInterface $fetch)
     {
-        $this->api_key = $api_key;
+        $this->api_key = env('NEWS_API_KEY');
+        $this->field_from =  ['title', 'description', 'content', 'urlToImage', 'url', 'publishedAt', 'source', 'author', 'category'];
+        $this->field = ['title', 'description', 'content', 'image', 'url', 'publishedAt', 'source', 'author_name', 'category_name'];
+        $this->fetch = $fetch;
     }
 
-    public function getHeadline($country = 'us')
+    public function headlines()
     {
-        $url = "https://newsapi.org/v2/top-headlines?country=" . $country . "&apiKey=" . $this->api_key;
-        $api = new APIController($url);
+        $url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=" . $this->api_key;
+        $api = $this->fetch->get($url);
         $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
         $this->articles = $articles->formatted;
     }
 
-    public function getPersonalize(string $type)
+    public function userFeed(string $type)
     {
         $url = "https://newsapi.org/v2/top-headlines?";
         $url .= $type;
         $url .= "&apiKey=" . $this->api_key;
 
         // $data = new APIController($url);
-        $api = new APIController($url);
+        $api = $this->fetch->get($url);
         $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
         $this->articles = $articles->formatted;
     }
 
-    public function searchArticle(string $search)
+    public function search(string $search)
     {
         $url = "https://newsapi.org/v2/everything?";
         $url .= "q=" . $search;
         $url .= "&apiKey=" . $this->api_key;
 
-        $api = new APIController($url);
+        $api = $this->fetch->get($url);
         $articles = new FormatAPIController($api->data, $this->field_from, $this->fields);
         $this->articles = $articles->formatted;
         // return $articles;

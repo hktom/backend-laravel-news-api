@@ -13,7 +13,7 @@ final class TaxonomyUpsert
     public function __invoke($_, array $args)
     {
         $taxonomy = new TaxonomyController();
-        $taxonomy->upsert($args['name'], $args['type'], isset($args['id']) ? $args['id'] : null);
+        $taxonomy->upsert($args['name'], $args['type'], isset($args['parent_id']) ? $args['parent_id'] : null);
         return $taxonomy->taxonomy;
     }
 }
