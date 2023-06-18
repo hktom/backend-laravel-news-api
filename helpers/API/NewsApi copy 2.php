@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Helpers\API;
 
-use App\Models\Article;
+// use App\Models\Article;
 use App\Helpers\Interfaces\ApiInterface;
 use App\Helpers\Interfaces\FetchInterface;
-use App\Helpers\Interfaces\ReducerInterface;
+// use App\Helpers\Interfaces\ReducerInterface;
 
 class NewsApi implements ApiInterface
 {
@@ -18,17 +18,18 @@ class NewsApi implements ApiInterface
 
     public object $data;
 
-    public array $field_from;
+    // private array $field_from;
 
-    public array $field;
+    // private array $field;
 
 
     public function __construct(FetchInterface $fetch)
     {
         $this->api_key = env('NEWS_API_KEY');
-        $this->field_from =  ['title', 'description', 'content', 'urlToImage', 'url', 'publishedAt', 'source', 'author', 'category'];
-        $this->field = ['title', 'description', 'content', 'image', 'url', 'publishedAt', 'source', 'author_name', 'category_name'];
         $this->fetch = $fetch;
+
+        // $this->field_from =  ['title', 'description', 'content', 'urlToImage', 'url', 'publishedAt', 'source', 'author', 'category'];
+        // $this->field = ['title', 'description', 'content', 'image', 'url', 'publishedAt', 'source', 'author_name', 'category_name'];
         // $this->reducer = $reducer;
     }
 
