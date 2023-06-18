@@ -80,21 +80,22 @@ final class Home
 
     private function authenticatedFeed(ApiInterface $newsApi, ApiInterface $newYorkTimeApi, ApiInterface $guardianApi, ApiFormatterInterface $apiFormatter, ApiQueryInterface $apiQuery)
     {
+        if ($apiQuery->type) {
+            $newsApi->userFeed($apiQuery);
+            $newYorkTimeApi->userFeed($apiQuery);
+            $guardianApi->userFeed($apiQuery);
+        } else {
+            $newsApi->headlines();
+            $newYorkTimeApi->headlines();
+            $guardianApi->headlines();
+        }
 
-        $newsApi->userFeed($apiQuery);
         $newsApi->format($apiFormatter);
-
-        $newYorkTimeApi->userFeed($apiQuery);
         $newYorkTimeApi->format($apiFormatter);
-
-        $guardianApi->headlines($apiQuery);
         $guardianApi->format($apiFormatter);
+        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
-        // $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
-
-        // return $articles;
-
-        return $guardianApi->formatted;
+        return $articles;
     }
 
     public function filterTaxonomy(string $type)
