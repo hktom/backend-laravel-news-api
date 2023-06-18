@@ -10,8 +10,7 @@ scalar DateTimeTz
 # }
 
 type Query {
-    getProfile: Profile @guard
-    getDefaultArticle: [Article]!
+    home: Profile
     searchArticle(search: String!): [Article]
 }
 
@@ -23,7 +22,8 @@ type Mutation {
     updateUser(name: String!, avatar: String): User @update @guard
 
     articleStatus(input: InputArticle! @spread): Article @guard
-    preference(input: InputPreference! @spread): Preference @guard
+    taxonomyUpsert(input: InputTaxonomy! @spread): Taxonomy @guard
+    settingUpsert(input: InputSetting! @spread): Setting @guard
 }
 
 input InputArticle {
@@ -33,11 +33,11 @@ input InputArticle {
     url: String
 }
 
-input InputPreference {
+input InputTaxonomy {
     name: String!
     type: String!
-    feed: Int
-    folder: String
+    slug: String
+    parent_id: String
 }
 
 input InputArticle {
@@ -47,14 +47,23 @@ input InputArticle {
     image: String
     publishedAt: String
     url: String
-    category: String
-    source: String
+    category_id: String
+    category_name: String
     source_id: String
     source_name: String
-    author: String
+    author_id: String
+    author_name: String
     read_later: Int
     favorites: Int
     already_read: Int
+}
+
+input InputSetting {
+    disposition: Int
+    dark_mode: Int
+    notification: Int
+    showByPage: Int
+    feed_by: String
 }
 
 type User {
@@ -64,11 +73,9 @@ type User {
     avatar: String
     created_at: DateTime
     updated_at: DateTime
-    folders: [Folder] @hasMany
     Settings: Setting @hasMany
     articles: [Article] @hasMany
     taxonomies: [Taxonomy] @hasMany
-    preferences: [Preference] @hasMany
 }
 
 type Article {
@@ -79,34 +86,16 @@ type Article {
     image: String
     publishedAt: String
     url: String
-    category: String
-    source: String
+    category_id: String
+    category_name: String
     source_id: String
     source_name: String
-    author: String
+    author_id: String
+    author_name: String
     read_later: Int
     favorites: Int
     already_read: Int
     user: User @belongsTo
-    created_at: DateTime
-    updated_at: DateTime
-}
-
-type Folder {
-    id: ID
-    name: String!
-    user: User @belongsTo
-    preferences: [Preference] @hasMany
-    created_at: DateTime
-    updated_at: DateTime
-}
-
-type Preference {
-    id: ID
-    feed: Int
-    user: User @belongsTo
-    folder: Folder @belongsTo
-    taxonomy: Taxonomy @belongsTo
     created_at: DateTime
     updated_at: DateTime
 }
@@ -118,6 +107,7 @@ type Setting {
     dark_mode: Int
     notification: Int
     showByPage: Int
+    feed_by: String
     created_at: DateTime!
     updated_at: DateTime!
 }
@@ -126,8 +116,10 @@ type Taxonomy {
     id: ID
     name: String!
     type: String!
+    slug: String
     user: User @belongsTo
-    preferences: [Preference] @hasMany
+    parent: Taxonomy @belongsTo
+    children: [Taxonomy] @hasMany
     created_at: DateTime
     updated_at: DateTime
 }
@@ -135,9 +127,10 @@ type Taxonomy {
 type Profile {
     user: User
     feed: [Article]
-    folders: [Folder]
-    preferences: [Preference]
-    taxonomies: [Taxonomy]
+    categories: [Taxonomy]
+    authors: [Taxonomy]
+    sources: [Taxonomy]
+    folders: [Taxonomy]
     settings: [Setting]
 }
 

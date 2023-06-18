@@ -3,7 +3,7 @@
 namespace App\GraphQL\Mutations;
 
 use App\Models\User;
-use App\Http\Controllers\AuthController;
+use App\Helpers\Authentication;
 
 final class SignUp
 {
@@ -32,7 +32,7 @@ final class SignUp
             'password' => $args['password'],
         ];
 
-        $auth = new AuthController();
+        $auth = new Authentication();
         $auth->login($credentials);
         
         return [

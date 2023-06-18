@@ -3,9 +3,9 @@
 namespace App\GraphQL\Mutations;
 
 use App\Helpers\Authentication;
-use App\Helpers\ArticleUpdater;
+use App\Helpers\SettingUpdater;
 
-final class ArticleStatus
+final class SettingUpsert
 {
     /**
      * @param  null  $_
@@ -14,8 +14,9 @@ final class ArticleStatus
     public function __invoke($_, array $args)
     {
         $user = new Authentication();
-        $article = new ArticleUpdater();
-        $article->upsert($args, $user->user_id);
-        return $article->article;
+        $setting = new SettingUpdater($user->user_id);
+        
+        $setting->upsert($args);
+        return $setting->setting;
     }
 }

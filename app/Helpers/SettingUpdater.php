@@ -1,24 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Helpers;
 
-use Illuminate\Http\Request;
 use App\Models\Setting;
 
-class SettingController extends Controller
+class SettingUpdater
 {
     private string $user_id;
+    public Setting $setting;
 
-    public function __construct()
+    public function __construct(string $user_id)
     {
-        $auth = new AuthController();
-        if (!$auth->me()->id) {
-            throw new \Exception("User not found", 1);
-        }
-        $this->user_id = $auth->me()->id;
+        $this->user_id = $user_id;
     }
 
-    public function upsertSetting(array $fields)
+    public function upsert(array $fields)
     {
         $setting = Setting::where('user_id', $this->user_id)->first();
         if (!$setting) {
@@ -31,5 +27,6 @@ class SettingController extends Controller
         }
 
         $setting->save();
+        $this->setting = $setting;
     }
 }

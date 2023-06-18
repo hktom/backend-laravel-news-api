@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Helpers;
 
-use Illuminate\Http\Request;
+use App\Helpers\Interfaces\FetchInterface;
 
-class APIController extends Controller
+class Fetch implements FetchInterface
 {
-    public array $data = [];
+    public $response = [];
 
-    public function __construct(string $url)
+    public function __construct()
+    {
+    }
+
+    public function get(string $url)
     {
         try {
             $curl = curl_init();
@@ -31,11 +35,9 @@ class APIController extends Controller
 
             curl_close($curl);
 
-            $news = json_decode($response);
+            $this->response = json_decode($response);
 
-            if ($news->status == 'ok' && $news->totalResults > 0) {
-                $this->data = $news->articles;
-            }
+            
         } catch (\Throwable $th) {
             throw $th;
         }

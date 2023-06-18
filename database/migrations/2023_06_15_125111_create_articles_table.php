@@ -12,17 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('articles', function (Blueprint $table) {
-            // $table->id();
             $table->uuid('id')->primary();
+            $table->string('url');
             $table->string('title');
+            $table->string('publishedAt');
             $table->text('description')->nullable();
             $table->text('content')->nullable();
             $table->string('image')->nullable();
-            $table->string('publishedAt');
-            $table->string('url');
-            $table->string('category')->nullable();
-            $table->string('source');
+            $table->string('category_id')->nullable();
+            $table->string('category_name')->nullable();
+            $table->string('source_name')->nullable();
             $table->string('source_id')->nullable();
+            $table->string('author_id')->nullable();
+            $table->string('author_name')->nullable();
             $table->tinyInteger('read_later')->default(0);
             $table->tinyInteger('favorites')->default(0);
             $table->tinyInteger('already_read')->default(0);

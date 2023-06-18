@@ -3,9 +3,9 @@
 namespace App\GraphQL\Mutations;
 
 use App\Helpers\Authentication;
-use App\Helpers\ArticleUpdater;
+use App\Helpers\TaxonomyUpdater;
 
-final class ArticleStatus
+final class TaxonomyUpsert
 {
     /**
      * @param  null  $_
@@ -14,8 +14,8 @@ final class ArticleStatus
     public function __invoke($_, array $args)
     {
         $user = new Authentication();
-        $article = new ArticleUpdater();
-        $article->upsert($args, $user->user_id);
-        return $article->article;
+        $taxonomy = new TaxonomyUpdater($user->user_id);
+        $taxonomy->upsert($args, isset($args['parent_id']) ? $args['parent_id'] : null);
+        return $taxonomy->taxonomy;
     }
 }

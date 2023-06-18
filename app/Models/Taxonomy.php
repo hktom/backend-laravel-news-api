@@ -15,7 +15,9 @@ class Taxonomy extends Model
     protected $fillable = [
         'name',
         'type',
+        'slug',
         'user_id',
+        'parent_id'
     ];
 
     /**
@@ -29,12 +31,22 @@ class Taxonomy extends Model
     }
 
     /**
-     * Get all of the preferences for the Taxonomy
+     * Get the parent that owns the Taxonomy
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Taxonomy::class, 'parent_id');
+    }
+
+    /**
+     * Get all of the children for the Taxonomy
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function preferences(): HasMany
+    public function children(): HasMany
     {
-        return $this->hasMany(Preference::class, 'taxonomy_id');
+        return $this->hasMany(Taxonomy::class, 'parent_id', 'id');
     }
 }

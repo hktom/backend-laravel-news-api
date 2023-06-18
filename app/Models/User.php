@@ -69,15 +69,6 @@ class User extends Authenticatable implements JWTSubject
         'password' => 'hashed',
     ];
 
-    /**
-     * Get all of the folders for the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function folders(): HasMany
-    {
-        return $this->hasMany(Folder::class, 'user_id', 'id');
-    }
 
     /**
      * Get all of the settings for the User
@@ -107,15 +98,5 @@ class User extends Authenticatable implements JWTSubject
     public function taxonomies(): HasMany
     {
         return $this->hasMany(Taxonomy::class, 'user_id', 'id');
-    }
-
-    /**
-     * Get all of the preference for the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function preference(): HasMany
-    {
-        return $this->hasMany(Preference::class, 'user_id', 'id');
     }
 }
