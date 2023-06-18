@@ -36,6 +36,7 @@ input InputArticle {
 input InputTaxonomy {
     name: String!
     type: String!
+    slug: String
     parent_id: String
 }
 
@@ -115,6 +116,7 @@ type Taxonomy {
     id: ID
     name: String!
     type: String!
+    slug: String
     user: User @belongsTo
     parent: Taxonomy @belongsTo
     children: [Taxonomy] @hasMany

@@ -20,8 +20,11 @@ final class Home
         'image',
         'url',
         'publishedAt',
-        'source',
+        'source_id',
+        'source_name',
+        'author_id',
         'author_name',
+        'category_id',
         'category_name'
     ];
 
@@ -75,8 +78,8 @@ final class Home
         $guardianApi->headlines();
         $guardianApi->format($this->article_schema);
 
-        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted) ;
-        
+        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
+
 
         return ['feed' => $articles];
     }
@@ -93,7 +96,7 @@ final class Home
         $guardianApi->headlines('');
         $guardianApi->format($this->article_schema);
 
-        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted) ;
+        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
         return $articles;
     }

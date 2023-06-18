@@ -39,6 +39,8 @@ class GuardianApi implements ApiInterface
     public function headlines()
     {
         $url = "https://content.guardianapis.com/search?api-key=" . $this->api_key;
+        // $url .= "&show-fields=thumbnail, productionOffice&order-by=newest";
+
         $this->fetch->get($url);
         if ($this->fetch->response->response->status == "ok") {
             $this->data = $this->fetch->response->response->results;

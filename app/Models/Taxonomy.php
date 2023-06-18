@@ -15,6 +15,7 @@ class Taxonomy extends Model
     protected $fillable = [
         'name',
         'type',
+        'slug',
         'user_id',
         'parent_id'
     ];

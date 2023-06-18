@@ -35,8 +35,7 @@ class NewsApi implements ApiInterface
             'author',
             'category'
         ];
-        // $this->field = ['title', 'description', 'content', 'image', 'url', 'publishedAt', 'source', 'author_name', 'category_name'];
-        // $this->reducer = $reducer;
+        
     }
 
     public function headlines()
