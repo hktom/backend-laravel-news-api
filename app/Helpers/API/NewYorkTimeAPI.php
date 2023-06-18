@@ -38,10 +38,10 @@ class NewYorkTimeApi implements ApiInterface
     {
         $url = "https://api.nytimes.com/svc/search/v2/articlesearch.json?";
 
-        if (isset($apiQuery->queries['source']) && $apiQuery->queries['source']) {
-            $url .= "fq=source:(" . urlencode(explode(',', $apiQuery->queries['source'])[0]) . ")";
-        } else if (isset($apiQuery->queries['category']) && $apiQuery->queries['category']) {
-            $url .= "fq=news_desk:(" . urlencode($apiQuery->queries['category']) . ")";
+        if ($apiQuery->queries == 'source' && $apiQuery->queries) {
+            $url .= "fq=source:(" . urlencode(explode(',', $apiQuery->queries)[0]) . ")";
+        } else if ($apiQuery->queries == 'category' && $apiQuery->queries) {
+            $url .= "fq=news_desk:(" . urlencode($apiQuery->queries) . ")";
         } else {
             return;
         }

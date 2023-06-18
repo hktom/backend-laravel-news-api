@@ -27,8 +27,7 @@ class GuardianApi implements ApiInterface
 
     public function headlines()
     {
-        $url = "https://content.guardianapis.com/search?show-fields=thumbnail,productionOffice&api-key=" . $this->api_key;
-        // $url .= "&show-fields=thumbnail, productionOffice&order-by=newest";
+        $url = "https://content.guardianapis.com/search?show-fields=thumbnail&api-key=" . $this->api_key;
 
         $this->fetch->get($url);
         if ($this->fetch->response->response->status == "ok") {
@@ -38,13 +37,13 @@ class GuardianApi implements ApiInterface
 
     public function userFeed(ApiQueryInterface $apiQuery)
     {
-        $url = "https://content.guardianapis.com/search?show-fields=thumbnail,productionOffice&api-key=";
+        $url = "https://content.guardianapis.com/search?show-fields=thumbnail&";
 
 
-        if (isset($apiQuery->queries['category']) && $apiQuery->queries['category']) {
-            $url .= "section=" . urlencode(explode(',', $apiQuery->queries['category'])[0]);
-        } else if (isset($apiQuery->queries['author']) && $apiQuery->queries['author']) {
-            $url .= "reference=" . urlencode(explode(',', $apiQuery->queries['author'])[0]);
+        if ($apiQuery->type == 'category' && $apiQuery->queries) {
+            $url .= "section=" . urlencode(explode(',', $apiQuery->queries)[0]);
+        } else if ($apiQuery->type == 'author' && $apiQuery->queries) {
+            $url .= "reference=" . urlencode(explode(',', $apiQuery->queries)[0]);
         } else {
             return;
         }
@@ -81,11 +80,12 @@ class GuardianApi implements ApiInterface
             $apiFormatter->setSourceName($object->pillarName);
             $apiFormatter->setCategoryName($object->sectionName);
             $apiFormatter->setCategoryId($object->sectionId);
-            $formatted[$index] = $apiFormatter->getAllPropertiesAsObject();
 
             if ($object->fields && is_object($object->fields)) {
                 $apiFormatter->setImage($object->fields->thumbnail);
             }
+
+            $formatted[$index] = $apiFormatter->getAllPropertiesAsObject();
             $apiFormatter->reset();
         }
 

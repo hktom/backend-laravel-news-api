@@ -44,7 +44,7 @@ final class Home
 
         foreach ($settings as $setting) {
             if ($setting->feed_by) {
-                $apiQuery->setQueries($setting->feed_by, $this->filterTaxonomy('source'));
+                $apiQuery->setQueries($setting->feed_by, $this->filterTaxonomy($setting->feed_by));
             }
         }
 
@@ -55,6 +55,8 @@ final class Home
             'feed' => $article,
             'settings' => $settings,
             'taxonomies' => $this->taxonomies,
+            'filterBy' => $apiQuery->type,
+            'filters' => $apiQuery->queries,
         ];
     }
 
@@ -88,9 +90,11 @@ final class Home
         $guardianApi->headlines($apiQuery);
         $guardianApi->format($apiFormatter);
 
-        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
+        // $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
-        return $articles;
+        // return $articles;
+
+        return $guardianApi->formatted;
     }
 
     public function filterTaxonomy(string $type)

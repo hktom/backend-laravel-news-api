@@ -129,6 +129,8 @@ type Profile {
     feed: [Article]
     Taxonomies: [Taxonomy]
     settings: [Setting]
+    filterBy: String
+    filters: String,
 }
 
 type Auth {
