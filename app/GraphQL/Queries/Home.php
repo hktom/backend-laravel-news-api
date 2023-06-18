@@ -5,28 +5,31 @@ namespace App\GraphQL\Queries;
 use App\Helpers\API\NewsAPI;
 use App\Helpers\API\NewYorkTimeAPI;
 use App\Helpers\API\GuardianApi;
+use App\Helpers\API\ApiFormatter;
 use App\Helpers\Fetch;
 use App\Helpers\Authentication;
 use App\Helpers\Interfaces\ApiInterface;
+use App\Helpers\Interfaces\ApiFormatterInterface;
 use App\Models\Setting;
 use App\Models\Taxonomy;
 
+
 final class Home
 {
-    public array $article_schema = [
-        'title',
-        'description',
-        'content',
-        'image',
-        'url',
-        'publishedAt',
-        'source_id',
-        'source_name',
-        'author_id',
-        'author_name',
-        'category_id',
-        'category_name'
-    ];
+    // public array $article_schema = [
+    //     'title',
+    //     'description',
+    //     'content',
+    //     'image',
+    //     'url',
+    //     'publishedAt',
+    //     'source_id',
+    //     'source_name',
+    //     'author_id',
+    //     'author_name',
+    //     'category_id',
+    //     'category_name'
+    // ];
 
     public $taxonomies;
 
@@ -39,12 +42,13 @@ final class Home
 
         $auth = new Authentication();
         $fetch = new Fetch();
+        $formatter = new ApiFormatter();
         $newsApi = new NewsAPI($fetch);
         $newYorkTimeApi = new NewYorkTimeAPI($fetch);
         $guardianApi = new GuardianApi($fetch);
 
         if (!$auth->user_id) {
-            return $this->noAuthenticatedFeed($newsApi, $newYorkTimeApi, $guardianApi);
+            return $this->noAuthenticatedFeed($newsApi, $newYorkTimeApi, $guardianApi, $formatter);
         }
 
         $this->taxonomies = Taxonomy::where('user_id', $auth->user_id)->get();
@@ -56,7 +60,7 @@ final class Home
         $taxonomies['category'] = $this->filterTaxonomy('category');
         $taxonomies['author'] = $this->filterTaxonomy('author');
 
-        $article = $this->authenticatedFeed($newsApi, $newYorkTimeApi, $guardianApi);
+        $article = $this->authenticatedFeed($newsApi, $newYorkTimeApi, $guardianApi, $formatter);
 
         return [
             'user' => $auth->user,
@@ -66,17 +70,17 @@ final class Home
         ];
     }
 
-    private function noAuthenticatedFeed(ApiInterface $newsApi, ApiInterface $newYorkTimeApi, ApiInterface $guardianApi)
+    private function noAuthenticatedFeed(ApiInterface $newsApi, ApiInterface $newYorkTimeApi, ApiInterface $guardianApi, ApiFormatterInterface $apiFormatter)
     {
 
         $newsApi->headlines();
-        $newsApi->format($this->article_schema);
+        $newsApi->format($apiFormatter);
 
         $newYorkTimeApi->headlines();
-        $newYorkTimeApi->format($this->article_schema);
+        $newYorkTimeApi->format($apiFormatter);
 
         $guardianApi->headlines();
-        $guardianApi->format($this->article_schema);
+        $guardianApi->format($apiFormatter);
 
         $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
@@ -84,17 +88,17 @@ final class Home
         return ['feed' => $articles];
     }
 
-    private function authenticatedFeed(ApiInterface $newsApi, ApiInterface $newYorkTimeApi, ApiInterface $guardianApi)
+    private function authenticatedFeed(ApiInterface $newsApi, ApiInterface $newYorkTimeApi, ApiInterface $guardianApi, ApiFormatterInterface $apiFormatter)
     {
 
         $newsApi->userFeed('');
-        $newsApi->format($this->article_schema);
+        $newsApi->format($apiFormatter);
 
         $newYorkTimeApi->userFeed('');
-        $newYorkTimeApi->format($this->article_schema);
+        $newYorkTimeApi->format($apiFormatter);
 
         $guardianApi->headlines('');
-        $guardianApi->format($this->article_schema);
+        $guardianApi->format($apiFormatter);
 
         $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 

@@ -24,19 +24,6 @@ class NewsApi implements ApiInterface
     {
         $this->api_key = env('NEWS_API_KEY');
         $this->fetch = $fetch;
-
-        // $this->api_data_key =  [
-        //     'title',
-        //     'description',
-        //     'content',
-        //     'urlToImage',
-        //     'url',
-        //     'publishedAt',
-        //     'source',
-        //     'author',
-        //     'category'
-        // ];
-
     }
 
     public function headlines()
@@ -77,37 +64,21 @@ class NewsApi implements ApiInterface
         $formatted = [];
 
         foreach ($this->data as $index => $object) {
-            // $formatter = $apiFormatter;
-            $formatter->setTitle($object->title);
-            $formatter->setDescription($object->description);
-            $formatter->setContent($object->content);
-            $formatter->setImage($object->urlToImage);
-            $formatter->setUrl($object->url);
-            $formatter->setPublishedAt($object->publishedAt);
-            $formatter->setSourceId($object->source->id);
-            $formatter->setSourceName($object->source->name);
-            $formatter->setAuthorId($object->author);
-            $formatter->setAuthorName($object->author);
-            $formatter->setCategoryId($object->category);
-            $formatter->setCategoryName($object->category);
+            $formatter->setTitle($object->title ?: '');
+            $formatter->setDescription($object->description ?: '');
+            $formatter->setContent($object->content ?: '');
+            $formatter->setImage($object->urlToImage ?: '');
+            $formatter->setUrl($object->url ?: '');
+            $formatter->setPublishedAt($object->publishedAt ?: '');
+            $formatter->setSourceId($object->source->id ?: '');
+            $formatter->setSourceName($object->source->name ?: '');
+            $formatter->setAuthorId($object->author ?: '');
+            $formatter->setAuthorName($object->author ?: '');
+            $formatter->setCategoryId(isset($object->category) ?: '');
+            $formatter->setCategoryName(isset($object->category) ?: '');
             $formatted[$index] = $formatter->getAllPropertiesAsObject();
             $formatter->reset();
         }
-
-        // foreach ($this->data as $index => $object) {
-        //     foreach ($object as $key => $value) {
-        //         if (!in_array($key, $this->api_data_key)) {
-        //             continue;
-        //         }
-        //         if (!is_object($value)) {
-        //             $formatted[$index][$format_fields[array_search($key, $this->api_data_key)]] = $value;
-        //         } else {
-        //             foreach ($value as $key3 => $value3) {
-        //                 $formatted[$index][$format_fields[array_search($key, $this->api_data_key)] . "_" . $key3] = $value3;
-        //             }
-        //         }
-        //     }
-        // }
 
         $this->formatted = $formatted;
     }

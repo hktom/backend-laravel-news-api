@@ -18,28 +18,16 @@ class GuardianApi implements ApiInterface
 
     private FetchInterface $fetch;
 
-    private array $api_data_key;
-
-
 
     public function __construct(FetchInterface $fetch)
     {
         $this->api_key = env('GUARDIAN_API_KEY');
         $this->fetch = $fetch;
-        // $this->api_data_key = [
-        //     "webTitle",
-        //     "webUrl",
-        //     "fields",
-        //     "pillarId",
-        //     "pillarName",
-        //     "sectionId",
-        //     "sectionName"
-        // ];
     }
 
     public function headlines()
     {
-        $url = "https://content.guardianapis.com/search?api-key=" . $this->api_key;
+        $url = "https://content.guardianapis.com/search?show-fields=thumbnail,productionOffice&api-key=" . $this->api_key;
         // $url .= "&show-fields=thumbnail, productionOffice&order-by=newest";
 
         $this->fetch->get($url);
@@ -50,7 +38,7 @@ class GuardianApi implements ApiInterface
 
     public function userFeed(string $type)
     {
-        $url = "https://newsapi.org/v2/top-headlines?";
+        $url = "https://content.guardianapis.com/search?show-fields=thumbnail,productionOffice&api-key=";
         $url .= $type;
         $url .= "&api-key=" . $this->api_key;
 
@@ -62,7 +50,7 @@ class GuardianApi implements ApiInterface
 
     public function search(string $search)
     {
-        $url = "https://content.guardianapis.com/search?";
+        $url = "https://content.guardianapis.com/search?show-fields=thumbnail,productionOffice";
         $url .= "q=" . $search;
         $url .= "&api-key=" . $this->api_key;
 
@@ -76,31 +64,21 @@ class GuardianApi implements ApiInterface
     {
         $formatted = [];
 
-        foreach($this->data as $index=>$object){
-            $apiFormatter->setTitle($object->webTitle);
-            $apiFormatter->setUrl($object->webUrl);
-            $apiFormatter->setImage($object->fields->thumbnail);
-            $apiFormatter->setPublishedAt($object->webPublicationDate);
-            $apiFormatter->setSourceName($object->pillarName);
-            $apiFormatter->setCategoryName($object->sectionName);
-            $apiFormatter->setCategoryId($object->sectionId);
+        foreach ($this->data as $index => $object) {
+            $apiFormatter->setTitle(isset($object->webTitle) ?: '');
+            $apiFormatter->setUrl(isset($object->webUrl) ?: '');
+            $apiFormatter->setPublishedAt(isset($object->webPublicationDate) ?: '');
+            $apiFormatter->setSourceId(isset($object->pillarId) ?: '');
+            $apiFormatter->setSourceName(isset($object->pillarName) ?: '');
+            $apiFormatter->setCategoryName(isset($object->sectionName) ?: '');
+            $apiFormatter->setCategoryId(isset($object->sectionId) ?: '');
             $formatted[$index] = $apiFormatter->getAllPropertiesAsObject();
+
+            if ($object->fields && is_object($object->fields)) {
+                $apiFormatter->setImage($object->fields->thumbnail);
+            }
             $apiFormatter->reset();
         }
-
-        // foreach ($this->data as $index => $object) {
-        //     foreach ($object as $key => $value) {
-        //         if (!in_array($key, $this->api_data_key)) {
-        //             continue;
-        //         }
-
-        //         if ($key == 'fields' && is_object($value)) {
-        //             $formatted[$index]['image'] = $value->thumbnail;
-        //         } else {
-        //             $formatted[$index][$format_fields[array_search($key, $this->api_data_key)]] = $value;
-        //         }
-        //     }
-        // }
 
         $this->formatted = $formatted;
     }
