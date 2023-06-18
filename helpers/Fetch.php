@@ -2,7 +2,9 @@
 
 namespace App\Helpers;
 
-class Fetch
+use App\Helpers\Interfaces\FetchInterface;
+
+class Fetch implements FetchInterface
 {
     public $response = [];
 

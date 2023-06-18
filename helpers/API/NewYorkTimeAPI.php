@@ -5,7 +5,7 @@ namespace App\Helpers\API;
 use App\Helpers\Interfaces\ApiInterface;
 use App\Helpers\Interfaces\FetchInterface;
 
-class NewYorkApi implements ApiInterface
+class NewYorkTimeApi implements ApiInterface
 {
 
     public array $data = [];
