@@ -39,13 +39,14 @@ class GuardianApi implements ApiInterface
     public function userFeed(ApiQueryInterface $apiQuery)
     {
         $url = "https://content.guardianapis.com/search?show-fields=thumbnail,productionOffice&api-key=";
-        
-        if ($apiQuery->queries['category']) {
-            $url .= "section=" . urlencode(explode(',', $apiQuery->queries['category'])[0]);
-        }
 
-        if ($apiQuery->queries['author']) {
+
+        if (isset($apiQuery->queries['category']) && $apiQuery->queries['category']) {
+            $url .= "section=" . urlencode(explode(',', $apiQuery->queries['category'])[0]);
+        } else if (isset($apiQuery->queries['author']) && $apiQuery->queries['author']) {
             $url .= "reference=" . urlencode(explode(',', $apiQuery->queries['author'])[0]);
+        } else {
+            return;
         }
 
         $url .= "&api-key=" . $this->api_key;

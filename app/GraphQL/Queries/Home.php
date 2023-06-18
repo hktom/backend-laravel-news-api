@@ -99,7 +99,7 @@ final class Home
 
         foreach ($this->taxonomies as $taxonomy) {
             if ($taxonomy->type == $type) {
-                $data[] = $taxonomy;
+                $data[] = $taxonomy->slug;
             }
         }
 

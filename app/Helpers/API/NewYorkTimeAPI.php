@@ -37,13 +37,13 @@ class NewYorkTimeApi implements ApiInterface
     public function userFeed(ApiQueryInterface $apiQuery)
     {
         $url = "https://api.nytimes.com/svc/search/v2/articlesearch.json?";
-        
-        if ($apiQuery->queries['source']) {
-            $url .= "fq=source:(" . urlencode(explode(',', $apiQuery->queries['source'])[0]). ")";
-        }
 
-        if ($apiQuery->queries['category']) {
-            $url .= "fq=news_desk:(" . urlencode($apiQuery->queries['author']).")";
+        if (isset($apiQuery->queries['source']) && $apiQuery->queries['source']) {
+            $url .= "fq=source:(" . urlencode(explode(',', $apiQuery->queries['source'])[0]) . ")";
+        } else if (isset($apiQuery->queries['category']) && $apiQuery->queries['category']) {
+            $url .= "fq=news_desk:(" . urlencode($apiQuery->queries['category']) . ")";
+        } else {
+            return;
         }
 
         $url .= "&api-key=" . $this->api_key;

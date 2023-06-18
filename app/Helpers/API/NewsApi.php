@@ -40,13 +40,15 @@ class NewsApi implements ApiInterface
     {
         $url = "https://newsapi.org/v2/everything?";
 
-        if ($apiQuery->queries['source']) {
-            $url .= "sources=" . $apiQuery->queries['source'];
-        }
+        if (isset($apiQuery->queries['source']) && $apiQuery->queries['source']) {
 
-        if ($apiQuery->queries['author']) {
+            $url .= "sources=" . $apiQuery->queries['source'];
+        } else if (isset($apiQuery->queries['author']) && $apiQuery->queries['author']) {
+
             $url .= "q=" . urlencode($apiQuery->queries['author']);
             $url .= "searchIn=author";
+        } else {
+            return;
         }
 
         $url .= "&apiKey=" . $this->api_key;
