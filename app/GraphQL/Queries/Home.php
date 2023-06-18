@@ -75,10 +75,8 @@ final class Home
         $guardianApi->headlines();
         $guardianApi->format($this->article_schema);
 
-        $articles = [];
-        $articles = array_merge($articles, $newsApi->formatted);
-        $articles = array_merge($articles, $newYorkTimeApi->formatted);
-        $articles = array_merge($articles, $guardianApi->formatted);
+        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted) ;
+        
 
         return ['feed' => $articles];
     }
@@ -95,10 +93,7 @@ final class Home
         $guardianApi->headlines('');
         $guardianApi->format($this->article_schema);
 
-        $articles = [];
-        $articles = array_merge($articles, $newsApi->formatted);
-        $articles = array_merge($articles, $newYorkTimeApi->formatted);
-        $articles = array_merge($articles, $guardianApi->formatted);
+        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted) ;
 
         return $articles;
     }
