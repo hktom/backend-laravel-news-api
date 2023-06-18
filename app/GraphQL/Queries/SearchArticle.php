@@ -6,22 +6,12 @@ use App\Helpers\API\NewsAPI;
 use App\Helpers\API\NewYorkTimeAPI;
 use App\Helpers\API\GuardianApi;
 use App\Helpers\Fetch;
-
+// use App\Helpers\Interfaces\ApiFormatterInterface;
+use App\Helpers\API\ApiFormatter;
+// use App\Helpers\API\ApiQuery;
 
 final class SearchArticle
 {
-    public array $article_schema = [
-        'title',
-        'description',
-        'content',
-        'image',
-        'url',
-        'publishedAt',
-        'source',
-        'author_name',
-        'category_name'
-    ];
-
     /**
      * @param  null  $_
      * @param  array{}  $args
@@ -33,17 +23,22 @@ final class SearchArticle
         }
 
         $fetch = new Fetch();
+        $formatter = new ApiFormatter();
         $newsApi = new NewsAPI($fetch);
         $newYorkTimeApi = new NewYorkTimeAPI($fetch);
         $guardianApi = new GuardianApi($fetch);
+        
+        // $apiQuery = new ApiQuery();
+        // $apiQuery->setSearch($args['search']);
+        // $apiQuery->getQuery();
 
-        $newsApi->search($args['search']);
-        $newYorkTimeApi->search($args['search']);
-        $guardianApi->search($args['search']);
+        $newsApi->search(urlencode($args['search']));
+        $newYorkTimeApi->search(urlencode($args['search']));
+        $guardianApi->search(urlencode($args['search']));
 
-        $newsApi->format($this->article_schema);
-        $newYorkTimeApi->format($this->article_schema);
-        $guardianApi->format($this->article_schema);
+        $newsApi->format($formatter);
+        $newYorkTimeApi->format($formatter);
+        $guardianApi->format($formatter);
 
         $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 

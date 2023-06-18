@@ -51,11 +51,11 @@ class GuardianApi implements ApiInterface
     public function search(string $search)
     {
         $url = "https://content.guardianapis.com/search?show-fields=thumbnail,productionOffice";
-        $url .= "q=" . $search;
+        $url .= "&q=" . $search;
         $url .= "&api-key=" . $this->api_key;
 
         $this->fetch->get($url);
-        if ($this->fetch->response->response->status == "ok") {
+        if ($this->fetch->response->response && $this->fetch->response->response->status == "ok") {
             $this->data = $this->fetch->response->response->results;
         }
     }
