@@ -75,7 +75,7 @@ type User {
     avatar: String
     created_at: DateTime
     updated_at: DateTime
-    settings: Setting @hasMany
+    settings: [Setting] @hasMany
     articles: [Article] @hasMany
     taxonomies: [Taxonomy] @hasMany
 }
