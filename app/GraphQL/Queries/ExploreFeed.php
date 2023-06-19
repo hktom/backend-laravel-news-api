@@ -25,31 +25,53 @@ final class ExploreFeed
      */
     public function __invoke($_, array $args)
     {
+        // $fetch = new Fetch();
+        // $formatter = new ApiFormatter();
+        // $newsApi = new NewsAPI($fetch);
+        // // $newYorkTimeApi = new NewYorkTimeAPI($fetch);
+        // // $guardianApi = new GuardianApi($fetch);
+
+        // $newsApi->headlines();
+        
+        // $fetch->pushUrls($newsApi->url, $newsApi->name);
+        // $fetch->getHttp();
+
+        // $newsApi->format($formatter, $fetch->responses[$newsApi->name]);
+
+        // // $newYorkTimeApi->headlines();
+        // // $newYorkTimeApi->format($formatter);
+
+        // // $guardianApi->headlines();
+        // // $guardianApi->format($formatter);
+
+        // $fetch->close();
+
         $fetch = new Fetch();
         $formatter = new ApiFormatter();
         $newsApi = new NewsAPI($fetch);
-        // $newYorkTimeApi = new NewYorkTimeAPI($fetch);
-        // $guardianApi = new GuardianApi($fetch);
+        $newYorkTimeApi = new NewYorkTimeAPI($fetch);
+        $guardianApi = new GuardianApi($fetch);
 
         $newsApi->headlines();
-        
         $fetch->pushUrls($newsApi->url, $newsApi->name);
+
+        $newYorkTimeApi->headlines();
+        $fetch->pushUrls($newYorkTimeApi->url, $newYorkTimeApi->name);
+
+        $guardianApi->headlines();
+        $fetch->pushUrls($guardianApi->url, $guardianApi->name);
+
         $fetch->getHttp();
 
         $newsApi->format($formatter, $fetch->responses[$newsApi->name]);
-
-        // $newYorkTimeApi->headlines();
-        // $newYorkTimeApi->format($formatter);
-
-        // $guardianApi->headlines();
-        // $guardianApi->format($formatter);
+        $newYorkTimeApi->format($formatter, $fetch->responses[$newYorkTimeApi->name]);
+        $guardianApi->format($formatter, $fetch->responses[$guardianApi->name]);
 
         $fetch->close();
 
-        // $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
+        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
-        // return $articles;
-
-        return $newsApi->formatted;
+        return $articles;
+        
     }
 }

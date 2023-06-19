@@ -52,16 +52,27 @@ final class MyFeed
 
 
         $newsApi->userFeed($apiQuery);
+        $fetch->pushUrls($newsApi->url, $newsApi->name);
+
         $newYorkTimeApi->userFeed($apiQuery);
+        $fetch->pushUrls($newYorkTimeApi->url, $newYorkTimeApi->name);
+
         $guardianApi->userFeed($apiQuery);
+        $fetch->pushUrls($guardianApi->url, $guardianApi->name);
+
+        $fetch->getHttp();
+
+        // $newsApi->format($formatter);
+        // $newYorkTimeApi->format($formatter);
+        // $guardianApi->format($formatter);
+
+        $newsApi->format($formatter, $fetch->responses[$newsApi->name]);
+        $newYorkTimeApi->format($formatter, $fetch->responses[$newYorkTimeApi->name]);
+        $guardianApi->format($formatter, $fetch->responses[$guardianApi->name]);
+
+        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
         $fetch->close();
-
-
-        $newsApi->format($formatter);
-        $newYorkTimeApi->format($formatter);
-        $guardianApi->format($formatter);
-        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
         return $articles;
     }

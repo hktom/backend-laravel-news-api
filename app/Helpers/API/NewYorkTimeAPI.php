@@ -18,7 +18,7 @@ class NewYorkTimeApi implements ApiInterface
 
     public string $url;
 
-    public string $name = 'newsapi';
+    public string $name = 'newYorkTimeApi';
 
     // private FetchInterface $fetch;
 
