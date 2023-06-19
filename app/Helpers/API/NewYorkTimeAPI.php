@@ -16,22 +16,27 @@ class NewYorkTimeApi implements ApiInterface
 
     private $api_key;
 
-    private FetchInterface $fetch;
+    public string $url;
+
+    public string $name = 'newsapi';
+
+    // private FetchInterface $fetch;
 
 
     public function __construct(FetchInterface $fetch)
     {
         $this->api_key = env('NEW_YORK_TIME_API_KEY');
-        $this->fetch = $fetch;
+        // $this->fetch = $fetch;
     }
 
     public function headlines()
     {
         $url = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=" . $this->api_key;
-        $this->fetch->get($url);
-        if ($this->fetch->response->status == "OK") {
-            $this->data = $this->fetch->response->response->docs;
-        }
+        $this->url = $url;
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->status == "OK") {
+        //     $this->data = $this->fetch->response->response->docs;
+        // }
     }
 
     public function userFeed(ApiQueryInterface $apiQuery)
@@ -48,10 +53,12 @@ class NewYorkTimeApi implements ApiInterface
 
         $url .= "&api-key=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->status == "OK") {
-            $this->data = $this->fetch->response->response->docs;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->status == "OK") {
+        //     $this->data = $this->fetch->response->response->docs;
+        // }
     }
 
     public function search(string $search)
@@ -60,15 +67,21 @@ class NewYorkTimeApi implements ApiInterface
         $url .= "q=" . $search;
         $url .= "&api-key=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->status == "OK") {
-            $this->data = $this->fetch->response->response->docs;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->status == "OK") {
+        //     $this->data = $this->fetch->response->response->docs;
+        // }
     }
 
-    public function format(ApiFormatterInterface $formatter)
+    public function format(ApiFormatterInterface $formatter, object $data)
     {
         $formatted = [];
+
+        if ($data->status == "OK") {
+            $this->data = $data->response->docs;
+        }
 
         foreach ($this->data as $index => $object) {
 
