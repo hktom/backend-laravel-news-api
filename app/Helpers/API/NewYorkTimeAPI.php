@@ -72,18 +72,33 @@ class NewYorkTimeApi implements ApiInterface
 
         foreach ($this->data as $index => $object) {
 
-            $formatter->setContent($object->lead_paragraph);
-            $formatter->setDescription($object->abstract);
-            $formatter->setUrl($object->web_url);
-            $formatter->setPublishedAt($object->pub_date);
-            $formatter->setSourceName($object->source);
-            $formatter->setCategoryName($object->section_name);
+            if (isset($object->lead_paragraph)) {
+                $formatter->setContent($object->lead_paragraph);
+            }
+
+            if (isset($object->abstract)) {
+                $formatter->setDescription($object->abstract);
+            }
+
+            if (isset($object->web_url)) {
+                $formatter->setUrl($object->web_url);
+            }
+
+            if (isset($object->pub_date)) {
+                $formatter->setPublishedAt($object->pub_date);
+            }
+
+            if (isset($object->source)) {
+                $formatter->setSourceName($object->source);
+            }
+
+            if (isset($object->section_name)) {
+                $formatter->setCategoryName($object->section_name);
+            }
 
             if ($object->headline && is_object($object->headline)) {
                 $formatter->setTitle($object->headline->main);
             }
-
-
 
             if (count($object->multimedia) > 0) {
                 $formatter->setImage("https://www.nytimes.com/" . $object->multimedia[0]->url);

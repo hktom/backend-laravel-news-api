@@ -74,18 +74,47 @@ class NewsApi implements ApiInterface
         $formatted = [];
 
         foreach ($this->data as $index => $object) {
-            $formatter->setTitle($object->title ?: '');
-            $formatter->setDescription($object->description ?: '');
-            $formatter->setContent($object->content ?: '');
-            $formatter->setImage($object->urlToImage ?: '');
-            $formatter->setUrl($object->url ?: '');
-            $formatter->setPublishedAt($object->publishedAt ?: '');
-            $formatter->setSourceId($object->source->id ?: '');
-            $formatter->setSourceName($object->source->name ?: '');
-            $formatter->setAuthorId($object->author ?: '');
-            $formatter->setAuthorName($object->author ?: '');
-            // $formatter->setCategoryId(isset($object->category) ?: '');
-            // $formatter->setCategoryName(isset($object->category) ?: '');
+            if (isset($object->title)) {
+                $formatter->setTitle($object->title);
+            }
+            if (isset($object->description)) {
+                $formatter->setDescription($object->description);
+            }
+
+            if (isset($object->content)) {
+                $formatter->setContent($object->content);
+            }
+
+            if (isset($object->urlToImage)) {
+                $formatter->setImage($object->urlToImage);
+            }
+
+            if (isset($object->url)) {
+                $formatter->setUrl($object->url);
+            }
+
+            if (isset($object->publishedAt)) {
+                $formatter->setPublishedAt($object->publishedAt);
+            }
+
+            if (isset($object->source->id)) {
+                $formatter->setSourceId($object->source->id);
+            }
+
+            if (isset($object->source->name)) {
+                $formatter->setSourceName($object->source->name);
+            }
+
+            if (isset($object->author)) {
+                $formatter->setAuthorId($object->author);
+                $formatter->setAuthorName($object->author);
+            }
+
+            if (isset($object->category)) {
+                $formatter->setCategoryId($object->category);
+                $formatter->setCategoryName($object->category);
+            }
+
             $formatted[$index] = $formatter->getAllPropertiesAsObject();
             $formatter->reset();
         }
