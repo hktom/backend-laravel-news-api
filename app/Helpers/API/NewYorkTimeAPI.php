@@ -16,22 +16,27 @@ class NewYorkTimeApi implements ApiInterface
 
     private $api_key;
 
-    private FetchInterface $fetch;
+    public string $url;
+
+    public string $name = 'newYorkTimeApi';
+
+    // private FetchInterface $fetch;
 
 
     public function __construct(FetchInterface $fetch)
     {
         $this->api_key = env('NEW_YORK_TIME_API_KEY');
-        $this->fetch = $fetch;
+        // $this->fetch = $fetch;
     }
 
     public function headlines()
     {
         $url = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=" . $this->api_key;
-        $this->fetch->get($url);
-        if ($this->fetch->response->status == "OK") {
-            $this->data = $this->fetch->response->response->docs;
-        }
+        $this->url = $url;
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->status == "OK") {
+        //     $this->data = $this->fetch->response->response->docs;
+        // }
     }
 
     public function userFeed(ApiQueryInterface $apiQuery)
@@ -48,10 +53,12 @@ class NewYorkTimeApi implements ApiInterface
 
         $url .= "&api-key=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->status == "OK") {
-            $this->data = $this->fetch->response->response->docs;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->status == "OK") {
+        //     $this->data = $this->fetch->response->response->docs;
+        // }
     }
 
     public function search(string $search)
@@ -60,30 +67,51 @@ class NewYorkTimeApi implements ApiInterface
         $url .= "q=" . $search;
         $url .= "&api-key=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->status == "OK") {
-            $this->data = $this->fetch->response->response->docs;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->status == "OK") {
+        //     $this->data = $this->fetch->response->response->docs;
+        // }
     }
 
-    public function format(ApiFormatterInterface $formatter)
+    public function format(ApiFormatterInterface $formatter, object $data)
     {
         $formatted = [];
 
+        if ($data->status == "OK") {
+            $this->data = $data->response->docs;
+        }
+
         foreach ($this->data as $index => $object) {
 
-            $formatter->setContent($object->lead_paragraph);
-            $formatter->setDescription($object->abstract);
-            $formatter->setUrl($object->web_url);
-            $formatter->setPublishedAt($object->pub_date);
-            $formatter->setSourceName($object->source);
-            $formatter->setCategoryName($object->section_name);
+            if (isset($object->lead_paragraph)) {
+                $formatter->setContent($object->lead_paragraph);
+            }
+
+            if (isset($object->abstract)) {
+                $formatter->setDescription($object->abstract);
+            }
+
+            if (isset($object->web_url)) {
+                $formatter->setUrl($object->web_url);
+            }
+
+            if (isset($object->pub_date)) {
+                $formatter->setPublishedAt($object->pub_date);
+            }
+
+            if (isset($object->source)) {
+                $formatter->setSourceName($object->source);
+            }
+
+            if (isset($object->section_name)) {
+                $formatter->setCategoryName($object->section_name);
+            }
 
             if ($object->headline && is_object($object->headline)) {
                 $formatter->setTitle($object->headline->main);
             }
-
-
 
             if (count($object->multimedia) > 0) {
                 $formatter->setImage("https://www.nytimes.com/" . $object->multimedia[0]->url);

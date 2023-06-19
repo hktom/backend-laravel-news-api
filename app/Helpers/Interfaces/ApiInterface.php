@@ -12,5 +12,5 @@ interface ApiInterface
 
     public function search(string $params);
 
-    public function format(ApiFormatterInterface $formatter);
+    public function format(ApiFormatterInterface $formatter, object $data);
 }

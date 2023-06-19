@@ -21,6 +21,22 @@ final class SignUp
             ];
         }
 
+        if ($args['confirm_password'] != $args['password']) {
+            return [
+                'token' => null,
+                'status' => 401,
+                'error' => 'Password and Confirm Password must be same'
+            ];
+        }
+
+        // if(strlen($args['password']) < 8) {
+        //     return [
+        //         'token' => null,
+        //         'status' => 401,
+        //         'error' => 'Password must be at least 8 characters'
+        //     ];
+        // }
+
         $user = new User();
         $user->name = $args['name'];
         $user->email = $args['email'];
@@ -34,7 +50,7 @@ final class SignUp
 
         $auth = new Authentication();
         $auth->login($credentials);
-        
+
         return [
             'token' => $auth->token,
             'status' => $auth->token ? 200 : 401,

@@ -18,21 +18,27 @@ class GuardianApi implements ApiInterface
 
     private FetchInterface $fetch;
 
+    public string $url;
+
+    public string $name = 'guardianApi';
+
 
     public function __construct(FetchInterface $fetch)
     {
         $this->api_key = env('GUARDIAN_API_KEY');
-        $this->fetch = $fetch;
+        // $this->fetch = $fetch;
     }
 
     public function headlines()
     {
         $url = "https://content.guardianapis.com/search?show-fields=thumbnail&api-key=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->response->status == "ok") {
-            $this->data = $this->fetch->response->response->results;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->response->status == "ok") {
+        //     $this->data = $this->fetch->response->response->results;
+        // }
     }
 
     public function userFeed(ApiQueryInterface $apiQuery)
@@ -50,10 +56,12 @@ class GuardianApi implements ApiInterface
 
         $url .= "&api-key=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->response->status == "ok") {
-            $this->data = $this->fetch->response->response->results;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->response->status == "ok") {
+        //     $this->data = $this->fetch->response->response->results;
+        // }
     }
 
     public function search(string $search)
@@ -62,26 +70,50 @@ class GuardianApi implements ApiInterface
         $url .= "&q=" . $search;
         $url .= "&api-key=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->response && $this->fetch->response->response->status == "ok") {
-            $this->data = $this->fetch->response->response->results;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->response && $this->fetch->response->response->status == "ok") {
+        //     $this->data = $this->fetch->response->response->results;
+        // }
     }
 
-    public function format(ApiFormatterInterface $apiFormatter)
+    public function format(ApiFormatterInterface $apiFormatter, object $data)
     {
         $formatted = [];
 
-        foreach ($this->data as $index => $object) {
-            $apiFormatter->setTitle($object->webTitle);
-            $apiFormatter->setUrl($object->webUrl);
-            $apiFormatter->setPublishedAt($object->webPublicationDate);
-            $apiFormatter->setSourceId($object->pillarId);
-            $apiFormatter->setSourceName($object->pillarName);
-            $apiFormatter->setCategoryName($object->sectionName);
-            $apiFormatter->setCategoryId($object->sectionId);
+        if ($data->response && $data->response->status == "ok") {
+            $this->data = $data->response->results;
+        }
 
-            if ($object->fields && is_object($object->fields)) {
+        foreach ($this->data as $index => $object) {
+            if (isset($object->webTitle)) {
+                $apiFormatter->setTitle($object->webTitle);
+            }
+
+            if (isset($object->webUrl)) {
+                $apiFormatter->setUrl($object->webUrl);
+            }
+
+            if (isset($object->webPublicationDate)) {
+                $apiFormatter->setPublishedAt($object->webPublicationDate);
+            }
+            if (isset($object->pillarId)) {
+                $apiFormatter->setSourceId($object->pillarId);
+            }
+
+            if (isset($object->pillarName)) {
+                $apiFormatter->setSourceName($object->pillarName);
+            }
+
+            if (isset($object->sectionName)) {
+                $apiFormatter->setCategoryName($object->sectionName);
+            }
+            if (isset($object->sectionId)) {
+                $apiFormatter->setCategoryId($object->sectionId);
+            }
+
+            if (isset($object->fields) && is_object($object->fields)) {
                 $apiFormatter->setImage($object->fields->thumbnail);
             }
 

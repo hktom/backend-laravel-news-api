@@ -12,28 +12,32 @@ class NewsApi implements ApiInterface
 
     private $api_key;
 
-    private FetchInterface $fetch;
+    // private FetchInterface $fetch;
 
-    private array $api_data_key;
+    // private array $api_data_key;
 
     public array $data = [];
 
     public array $formatted = [];
 
+    public string $url;
+
+    public string $name = 'newsapi';
+
 
     public function __construct(FetchInterface $fetch)
     {
         $this->api_key = env('NEWS_API_KEY');
-        $this->fetch = $fetch;
+        // $this->fetch = $fetch;
     }
 
     public function headlines()
     {
-        $url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=" . $this->api_key;
-        $this->fetch->get($url);
-        if ($this->fetch->response->status == "ok") {
-            $this->data = $this->fetch->response->articles;
-        }
+        $this->url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=" . $this->api_key;
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->status == "ok") {
+        //     $this->data = $this->fetch->response->articles;
+        // }
     }
 
     public function userFeed(ApiQueryInterface $apiQuery)
@@ -51,10 +55,12 @@ class NewsApi implements ApiInterface
 
         $url .= "&apiKey=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->status == "ok") {
-            $this->data = $this->fetch->response->articles;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->status == "ok") {
+        //     $this->data = $this->fetch->response->articles;
+        // }
     }
 
     public function search(string $search)
@@ -63,29 +69,67 @@ class NewsApi implements ApiInterface
         $url .= "q=" . $search;
         $url .= "&apiKey=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->status == "ok") {
-            $this->data = $this->fetch->response->articles;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->status == "ok") {
+        //     $this->data = $this->fetch->response->articles;
+        // }
     }
 
-    public function format(ApiFormatterInterface $formatter)
+    public function format(ApiFormatterInterface $formatter, object $data)
     {
+
         $formatted = [];
 
+        if ($data->status != "ok") {
+            return;
+        }
+        $this->data = $data->articles;
+
+
         foreach ($this->data as $index => $object) {
-            $formatter->setTitle($object->title ?: '');
-            $formatter->setDescription($object->description ?: '');
-            $formatter->setContent($object->content ?: '');
-            $formatter->setImage($object->urlToImage ?: '');
-            $formatter->setUrl($object->url ?: '');
-            $formatter->setPublishedAt($object->publishedAt ?: '');
-            $formatter->setSourceId($object->source->id ?: '');
-            $formatter->setSourceName($object->source->name ?: '');
-            $formatter->setAuthorId($object->author ?: '');
-            $formatter->setAuthorName($object->author ?: '');
-            // $formatter->setCategoryId(isset($object->category) ?: '');
-            // $formatter->setCategoryName(isset($object->category) ?: '');
+            if (isset($object->title)) {
+                $formatter->setTitle($object->title);
+            }
+            if (isset($object->description)) {
+                $formatter->setDescription($object->description);
+            }
+
+            if (isset($object->content)) {
+                $formatter->setContent($object->content);
+            }
+
+            if (isset($object->urlToImage)) {
+                $formatter->setImage($object->urlToImage);
+            }
+
+            if (isset($object->url)) {
+                $formatter->setUrl($object->url);
+            }
+
+            if (isset($object->publishedAt)) {
+                $formatter->setPublishedAt($object->publishedAt);
+            }
+
+            if (isset($object->source->id)) {
+                $formatter->setSourceId($object->source->id);
+            }
+
+            if (isset($object->source->name)) {
+                $formatter->setSourceName($object->source->name);
+            }
+
+            if (isset($object->author)) {
+                $formatter->setAuthorId($object->author);
+                $formatter->setAuthorName($object->author);
+            }
+
+            if (isset($object->category)) {
+                $formatter->setCategoryId($object->category);
+                $formatter->setCategoryName($object->category);
+            }
+
             $formatted[$index] = $formatter->getAllPropertiesAsObject();
             $formatter->reset();
         }

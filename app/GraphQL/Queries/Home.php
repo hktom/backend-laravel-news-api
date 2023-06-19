@@ -1,113 +1,115 @@
 <?php
 
-namespace App\GraphQL\Queries;
+// silence is golden
 
-use App\Helpers\API\NewsAPI;
-use App\Helpers\API\NewYorkTimeAPI;
-use App\Helpers\API\GuardianApi;
-use App\Helpers\API\ApiFormatter;
-use App\Helpers\Fetch;
-use App\Helpers\Authentication;
-use App\Helpers\Interfaces\ApiInterface;
-use App\Helpers\Interfaces\ApiFormatterInterface;
-use App\Models\Setting;
-use App\Models\Taxonomy;
-use App\Helpers\Interfaces\ApiQueryInterface;
-use App\Helpers\API\ApiQuery;
+// namespace App\GraphQL\Queries;
 
-final class Home
-{
+// use App\Helpers\API\NewsAPI;
+// use App\Helpers\API\NewYorkTimeAPI;
+// use App\Helpers\API\GuardianApi;
+// use App\Helpers\API\ApiFormatter;
+// use App\Helpers\Fetch;
+// use App\Helpers\Authentication;
+// use App\Helpers\Interfaces\ApiInterface;
+// use App\Helpers\Interfaces\ApiFormatterInterface;
+// use App\Models\Setting;
+// use App\Models\Taxonomy;
+// use App\Helpers\Interfaces\ApiQueryInterface;
+// use App\Helpers\API\ApiQuery;
 
-    public $taxonomies;
+// final class Home
+// {
 
-    /**
-     * @param  null  $_
-     * @param  array{}  $args
-     */
-    public function __invoke($_, array $args)
-    {
+//     public $taxonomies;
 
-        $auth = new Authentication();
-        $fetch = new Fetch();
-        $formatter = new ApiFormatter();
-        $newsApi = new NewsAPI($fetch);
-        $newYorkTimeApi = new NewYorkTimeAPI($fetch);
-        $guardianApi = new GuardianApi($fetch);
-        $apiQuery = new ApiQuery();
+//     /**
+//      * @param  null  $_
+//      * @param  array{}  $args
+//      */
+//     public function __invoke($_, array $args)
+//     {
 
-        if (!$auth->user_id) {
-            return $this->noAuthenticatedFeed($newsApi, $newYorkTimeApi, $guardianApi, $formatter, $apiQuery);
-        }
+//         $auth = new Authentication();
+//         $fetch = new Fetch();
+//         $formatter = new ApiFormatter();
+//         $newsApi = new NewsAPI($fetch);
+//         $newYorkTimeApi = new NewYorkTimeAPI($fetch);
+//         $guardianApi = new GuardianApi($fetch);
+//         $apiQuery = new ApiQuery();
 
-        $this->taxonomies = Taxonomy::where('user_id', $auth->user_id)->get();
-        $settings = Setting::where('user_id', $auth->user_id)->get();
+//         if (!$auth->user_id) {
+//             return $this->noAuthenticatedFeed($newsApi, $newYorkTimeApi, $guardianApi, $formatter, $apiQuery);
+//         }
 
-        foreach ($settings as $setting) {
-            if ($setting->feed_by) {
-                $apiQuery->setQueries($setting->feed_by, $this->filterTaxonomy($setting->feed_by));
-            }
-        }
+//         $this->taxonomies = Taxonomy::where('user_id', $auth->user_id)->get();
+//         $settings = Setting::where('user_id', $auth->user_id)->get();
 
-        $article = $this->authenticatedFeed($newsApi, $newYorkTimeApi, $guardianApi, $formatter, $apiQuery);
+//         foreach ($settings as $setting) {
+//             if ($setting->feed_by) {
+//                 $apiQuery->setQueries($setting->feed_by, $this->filterTaxonomy($setting->feed_by));
+//             }
+//         }
 
-        return [
-            'user' => $auth->user,
-            'feed' => $article,
-            'settings' => $settings,
-            'taxonomies' => $this->taxonomies,
-            'filterBy' => $apiQuery->type,
-            'filters' => $apiQuery->queries,
-        ];
-    }
+//         $article = $this->authenticatedFeed($newsApi, $newYorkTimeApi, $guardianApi, $formatter, $apiQuery);
 
-    private function noAuthenticatedFeed(ApiInterface $newsApi, ApiInterface $newYorkTimeApi, ApiInterface $guardianApi, ApiFormatterInterface $apiFormatter, ApiQueryInterface $apiQuery)
-    {
+//         return [
+//             'user' => $auth->user,
+//             'feed' => $article,
+//             'settings' => $settings,
+//             'taxonomies' => $this->taxonomies,
+//             'filterBy' => $apiQuery->type,
+//             'filters' => $apiQuery->queries,
+//         ];
+//     }
 
-        $newsApi->headlines();
-        $newsApi->format($apiFormatter);
+//     private function noAuthenticatedFeed(ApiInterface $newsApi, ApiInterface $newYorkTimeApi, ApiInterface $guardianApi, ApiFormatterInterface $apiFormatter, ApiQueryInterface $apiQuery)
+//     {
 
-        $newYorkTimeApi->headlines();
-        $newYorkTimeApi->format($apiFormatter);
+//         $newsApi->headlines();
+//         $newsApi->format($apiFormatter);
 
-        $guardianApi->headlines();
-        $guardianApi->format($apiFormatter);
+//         $newYorkTimeApi->headlines();
+//         $newYorkTimeApi->format($apiFormatter);
 
-        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
+//         $guardianApi->headlines();
+//         $guardianApi->format($apiFormatter);
+
+//         $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
 
-        return ['feed' => $articles];
-    }
+//         return ['feed' => $articles];
+//     }
 
-    private function authenticatedFeed(ApiInterface $newsApi, ApiInterface $newYorkTimeApi, ApiInterface $guardianApi, ApiFormatterInterface $apiFormatter, ApiQueryInterface $apiQuery)
-    {
-        if ($apiQuery->type) {
-            $newsApi->userFeed($apiQuery);
-            $newYorkTimeApi->userFeed($apiQuery);
-            $guardianApi->userFeed($apiQuery);
-        } else {
-            $newsApi->headlines();
-            $newYorkTimeApi->headlines();
-            $guardianApi->headlines();
-        }
+//     private function authenticatedFeed(ApiInterface $newsApi, ApiInterface $newYorkTimeApi, ApiInterface $guardianApi, ApiFormatterInterface $apiFormatter, ApiQueryInterface $apiQuery)
+//     {
+//         if ($apiQuery->type) {
+//             $newsApi->userFeed($apiQuery);
+//             $newYorkTimeApi->userFeed($apiQuery);
+//             $guardianApi->userFeed($apiQuery);
+//         } else {
+//             $newsApi->headlines();
+//             $newYorkTimeApi->headlines();
+//             $guardianApi->headlines();
+//         }
 
-        $newsApi->format($apiFormatter);
-        $newYorkTimeApi->format($apiFormatter);
-        $guardianApi->format($apiFormatter);
-        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
+//         $newsApi->format($apiFormatter);
+//         $newYorkTimeApi->format($apiFormatter);
+//         $guardianApi->format($apiFormatter);
+//         $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
-        return $articles;
-    }
+//         return $articles;
+//     }
 
-    public function filterTaxonomy(string $type)
-    {
-        $data = [];
+//     public function filterTaxonomy(string $type)
+//     {
+//         $data = [];
 
-        foreach ($this->taxonomies as $taxonomy) {
-            if ($taxonomy->type == $type) {
-                $data[] = $taxonomy->slug;
-            }
-        }
+//         foreach ($this->taxonomies as $taxonomy) {
+//             if ($taxonomy->type == $type) {
+//                 $data[] = $taxonomy->slug;
+//             }
+//         }
 
-        return $data;
-    }
-}
+//         return $data;
+//     }
+// }

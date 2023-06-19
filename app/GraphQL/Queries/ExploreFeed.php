@@ -5,40 +5,60 @@ namespace App\GraphQL\Queries;
 use App\Helpers\API\NewsAPI;
 use App\Helpers\API\NewYorkTimeAPI;
 use App\Helpers\API\GuardianApi;
-use App\Helpers\Fetch;
-// use App\Helpers\Interfaces\ApiFormatterInterface;
 use App\Helpers\API\ApiFormatter;
+use App\Helpers\Fetch;
+// use App\Helpers\Authentication;
+// use App\Helpers\Interfaces\ApiInterface;
+// use App\Helpers\Interfaces\ApiFormatterInterface;
+// use App\Models\Setting;
+// use App\Models\Taxonomy;
+// use App\Helpers\Interfaces\ApiQueryInterface;
 // use App\Helpers\API\ApiQuery;
+// use App\Helpers\FilterTaxonomy;
 
-final class SearchArticle
+final class ExploreFeed
 {
+
     /**
      * @param  null  $_
      * @param  array{}  $args
      */
-    public function __invoke($_, array $args): array
+    public function __invoke($_, array $args)
     {
-        if (!$args['search']) {
-            return [];
-        }
+        // $fetch = new Fetch();
+        // $formatter = new ApiFormatter();
+        // $newsApi = new NewsAPI($fetch);
+        // // $newYorkTimeApi = new NewYorkTimeAPI($fetch);
+        // // $guardianApi = new GuardianApi($fetch);
+
+        // $newsApi->headlines();
+        
+        // $fetch->pushUrls($newsApi->url, $newsApi->name);
+        // $fetch->getHttp();
+
+        // $newsApi->format($formatter, $fetch->responses[$newsApi->name]);
+
+        // // $newYorkTimeApi->headlines();
+        // // $newYorkTimeApi->format($formatter);
+
+        // // $guardianApi->headlines();
+        // // $guardianApi->format($formatter);
+
+        // $fetch->close();
 
         $fetch = new Fetch();
         $formatter = new ApiFormatter();
         $newsApi = new NewsAPI($fetch);
         $newYorkTimeApi = new NewYorkTimeAPI($fetch);
         $guardianApi = new GuardianApi($fetch);
-        
-        // $apiQuery = new ApiQuery();
-        // $apiQuery->setSearch($args['search']);
-        // $apiQuery->getQuery();
 
-        $newsApi->search(urlencode($args['search']));
+        $newsApi->headlines();
         $fetch->pushUrls($newsApi->url, $newsApi->name);
 
-        $newYorkTimeApi->search(urlencode($args['search']));
+        $newYorkTimeApi->headlines();
         $fetch->pushUrls($newYorkTimeApi->url, $newYorkTimeApi->name);
 
-        $guardianApi->search(urlencode($args['search']));
+        $guardianApi->headlines();
         $fetch->pushUrls($guardianApi->url, $guardianApi->name);
 
         $fetch->getHttp();
@@ -49,12 +69,9 @@ final class SearchArticle
 
         $fetch->close();
 
-        // $newsApi->format($formatter);
-        // $newYorkTimeApi->format($formatter);
-        // $guardianApi->format($formatter);
-
         $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
         return $articles;
+        
     }
 }
