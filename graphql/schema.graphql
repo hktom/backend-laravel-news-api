@@ -11,7 +11,7 @@ scalar DateTimeTz
 
 type Query {
     myFeed:  [Article] @guard
-    explore: [Article] @guard
+    exploreFeed: [Article] @guard
     searchArticle(search: String!): [Article] @guard
     me: User @auth
 }

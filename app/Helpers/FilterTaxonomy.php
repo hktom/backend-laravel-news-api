@@ -4,11 +4,11 @@ namespace App\Helpers;
 
 class FilterTaxonomy
 {
-    private array $taxonomies;
+    private object $taxonomies;
     public array $data;
 
 
-    public function __construct(array $taxonomies)
+    public function __construct(object $taxonomies)
     {
         $this->taxonomies = $taxonomies;
     }

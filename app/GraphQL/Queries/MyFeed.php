@@ -34,6 +34,11 @@ final class MyFeed
         $apiQuery = new ApiQuery();
 
         $taxonomies = Taxonomy::where('user_id', $auth->user_id)->get();
+
+        if (count($taxonomies) == 0) {
+            return [];
+        }
+
         $filterTaxonomy = new FilterTaxonomy($taxonomies);
         $settings = Setting::where('user_id', $auth->user_id)->get();
 
