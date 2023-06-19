@@ -18,21 +18,27 @@ class GuardianApi implements ApiInterface
 
     private FetchInterface $fetch;
 
+    public string $url;
+
+    public string $name = 'guardianApi';
+
 
     public function __construct(FetchInterface $fetch)
     {
         $this->api_key = env('GUARDIAN_API_KEY');
-        $this->fetch = $fetch;
+        // $this->fetch = $fetch;
     }
 
     public function headlines()
     {
         $url = "https://content.guardianapis.com/search?show-fields=thumbnail&api-key=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->response->status == "ok") {
-            $this->data = $this->fetch->response->response->results;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->response->status == "ok") {
+        //     $this->data = $this->fetch->response->response->results;
+        // }
     }
 
     public function userFeed(ApiQueryInterface $apiQuery)
@@ -50,10 +56,12 @@ class GuardianApi implements ApiInterface
 
         $url .= "&api-key=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->response->status == "ok") {
-            $this->data = $this->fetch->response->response->results;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->response->status == "ok") {
+        //     $this->data = $this->fetch->response->response->results;
+        // }
     }
 
     public function search(string $search)
@@ -62,15 +70,21 @@ class GuardianApi implements ApiInterface
         $url .= "&q=" . $search;
         $url .= "&api-key=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->response && $this->fetch->response->response->status == "ok") {
-            $this->data = $this->fetch->response->response->results;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->response && $this->fetch->response->response->status == "ok") {
+        //     $this->data = $this->fetch->response->response->results;
+        // }
     }
 
-    public function format(ApiFormatterInterface $apiFormatter)
+    public function format(ApiFormatterInterface $apiFormatter, object $data)
     {
         $formatted = [];
+
+        if ($data->response && $data->response->status == "ok") {
+            $this->data = $data->response->results;
+        }
 
         foreach ($this->data as $index => $object) {
             if (isset($object->webTitle)) {

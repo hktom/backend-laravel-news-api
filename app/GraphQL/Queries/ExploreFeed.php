@@ -28,8 +28,8 @@ final class ExploreFeed
         $fetch = new Fetch();
         $formatter = new ApiFormatter();
         $newsApi = new NewsAPI($fetch);
-        $newYorkTimeApi = new NewYorkTimeAPI($fetch);
-        $guardianApi = new GuardianApi($fetch);
+        // $newYorkTimeApi = new NewYorkTimeAPI($fetch);
+        // $guardianApi = new GuardianApi($fetch);
 
         $newsApi->headlines();
         
@@ -46,8 +46,10 @@ final class ExploreFeed
 
         $fetch->close();
 
-        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
+        // $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
-        return $articles;
+        // return $articles;
+
+        return $newsApi->formatted;
     }
 }

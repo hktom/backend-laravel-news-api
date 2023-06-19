@@ -12,9 +12,9 @@ class NewsApi implements ApiInterface
 
     private $api_key;
 
-    private FetchInterface $fetch;
+    // private FetchInterface $fetch;
 
-    private array $api_data_key;
+    // private array $api_data_key;
 
     public array $data = [];
 
@@ -28,7 +28,7 @@ class NewsApi implements ApiInterface
     public function __construct(FetchInterface $fetch)
     {
         $this->api_key = env('NEWS_API_KEY');
-        $this->fetch = $fetch;
+        // $this->fetch = $fetch;
     }
 
     public function headlines()
@@ -55,10 +55,12 @@ class NewsApi implements ApiInterface
 
         $url .= "&apiKey=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->status == "ok") {
-            $this->data = $this->fetch->response->articles;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->status == "ok") {
+        //     $this->data = $this->fetch->response->articles;
+        // }
     }
 
     public function search(string $search)
@@ -67,10 +69,12 @@ class NewsApi implements ApiInterface
         $url .= "q=" . $search;
         $url .= "&apiKey=" . $this->api_key;
 
-        $this->fetch->get($url);
-        if ($this->fetch->response->status == "ok") {
-            $this->data = $this->fetch->response->articles;
-        }
+        $this->url = $url;
+
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->status == "ok") {
+        //     $this->data = $this->fetch->response->articles;
+        // }
     }
 
     public function format(ApiFormatterInterface $formatter, object $data)
@@ -78,10 +82,10 @@ class NewsApi implements ApiInterface
 
         $formatted = [];
 
-        if ($data->response->status == "ok") {
+        if ($data->status != "ok") {
             return;
         }
-        $this->data = $data->response->articles;
+        $this->data = $data->articles;
 
 
         foreach ($this->data as $index => $object) {
