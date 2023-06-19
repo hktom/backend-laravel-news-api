@@ -55,6 +55,8 @@ final class MyFeed
         $newYorkTimeApi->userFeed($apiQuery);
         $guardianApi->userFeed($apiQuery);
 
+        $fetch->close();
+
 
         $newsApi->format($formatter);
         $newYorkTimeApi->format($formatter);

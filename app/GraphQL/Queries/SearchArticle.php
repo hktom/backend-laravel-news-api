@@ -36,6 +36,8 @@ final class SearchArticle
         $newYorkTimeApi->search(urlencode($args['search']));
         $guardianApi->search(urlencode($args['search']));
 
+        $fetch->close();
+
         $newsApi->format($formatter);
         $newYorkTimeApi->format($formatter);
         $guardianApi->format($formatter);

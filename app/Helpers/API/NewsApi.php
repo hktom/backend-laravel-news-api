@@ -20,6 +20,10 @@ class NewsApi implements ApiInterface
 
     public array $formatted = [];
 
+    public string $url;
+
+    public string $name = 'newsapi';
+
 
     public function __construct(FetchInterface $fetch)
     {
@@ -29,11 +33,11 @@ class NewsApi implements ApiInterface
 
     public function headlines()
     {
-        $url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=" . $this->api_key;
-        $this->fetch->get($url);
-        if ($this->fetch->response->status == "ok") {
-            $this->data = $this->fetch->response->articles;
-        }
+        $this->url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=" . $this->api_key;
+        // $this->fetch->get($url);
+        // if ($this->fetch->response->status == "ok") {
+        //     $this->data = $this->fetch->response->articles;
+        // }
     }
 
     public function userFeed(ApiQueryInterface $apiQuery)
@@ -69,9 +73,16 @@ class NewsApi implements ApiInterface
         }
     }
 
-    public function format(ApiFormatterInterface $formatter)
+    public function format(ApiFormatterInterface $formatter, object $data)
     {
+
         $formatted = [];
+
+        if ($data->response->status == "ok") {
+            return;
+        }
+        $this->data = $data->response->articles;
+
 
         foreach ($this->data as $index => $object) {
             if (isset($object->title)) {

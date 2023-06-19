@@ -32,13 +32,19 @@ final class ExploreFeed
         $guardianApi = new GuardianApi($fetch);
 
         $newsApi->headlines();
-        $newsApi->format($formatter);
+        
+        $fetch->pushUrls($newsApi->url, $newsApi->name);
+        $fetch->getHttp();
 
-        $newYorkTimeApi->headlines();
-        $newYorkTimeApi->format($formatter);
+        $newsApi->format($formatter, $fetch->responses[$newsApi->name]);
 
-        $guardianApi->headlines();
-        $guardianApi->format($formatter);
+        // $newYorkTimeApi->headlines();
+        // $newYorkTimeApi->format($formatter);
+
+        // $guardianApi->headlines();
+        // $guardianApi->format($formatter);
+
+        $fetch->close();
 
         $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
