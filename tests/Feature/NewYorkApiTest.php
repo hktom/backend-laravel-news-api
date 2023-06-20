@@ -24,7 +24,9 @@ class NewYorkApiTest extends TestCase
         $formatter = new ApiFormatter();
         $newYorkApi->headlines();
 
-        $fetch->pushUrls($newYorkApi->url, $newYorkApi->name);
+        $fetch->pushUrls([
+            $newYorkApi->name => $newYorkApi->url
+        ]);
         $fetch->getHttp();
 
         $newYorkApi->format($formatter, $fetch->responses[$newYorkApi->name]);

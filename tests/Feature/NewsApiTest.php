@@ -25,7 +25,8 @@ class NewsApiTest extends TestCase
         $formatter = new ApiFormatter();
         $newsApi->headlines();
 
-        $fetch->pushUrls($newsApi->url, $newsApi->name);
+        $fetch->pushUrls([$newsApi->name => $newsApi->url]);
+        
         $fetch->getHttp();
 
         $newsApi->format($formatter, $fetch->responses[$newsApi->name]);

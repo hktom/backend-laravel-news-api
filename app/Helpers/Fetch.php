@@ -18,9 +18,9 @@ class Fetch implements FetchInterface
         // $this->curl = curl_init();
     }
 
-    public function pushUrls(string $url, string $key)
+    public function pushUrls(array $urls)
     {
-        $this->urls[$key] = $url;
+        $this->urls = $urls;
     }
 
     // private function pushUrlToPool(Pool $pool): array

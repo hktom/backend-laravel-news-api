@@ -26,13 +26,14 @@ class FeedApiTest extends TestCase
         $guardianApi = new GuardianApi($fetch);
 
         $newsApi->headlines();
-        $fetch->pushUrls($newsApi->url, $newsApi->name);
-
         $newYorkTimeApi->headlines();
-        $fetch->pushUrls($newYorkTimeApi->url, $newYorkTimeApi->name);
-
         $guardianApi->headlines();
-        $fetch->pushUrls($guardianApi->url, $guardianApi->name);
+
+        $fetch->pushUrls([
+            $newsApi->name => $newsApi->url,
+            $newYorkTimeApi->name => $newYorkTimeApi->url,
+            $guardianApi->name => $guardianApi->url
+        ]);
 
         $fetch->getHttp();
 
@@ -60,18 +61,16 @@ class FeedApiTest extends TestCase
         $newYorkTimeApi = new NewYorkTimeAPI($fetch);
         $guardianApi = new GuardianApi($fetch);
 
-        // $apiQuery = new ApiQuery();
-        // $apiQuery->setSearch($args['search']);
-        // $apiQuery->getQuery();
-
         $newsApi->search(urlencode($args['search']));
-        $fetch->pushUrls($newsApi->url, $newsApi->name);
-
         $newYorkTimeApi->search(urlencode($args['search']));
-        $fetch->pushUrls($newYorkTimeApi->url, $newYorkTimeApi->name);
-
         $guardianApi->search(urlencode($args['search']));
-        $fetch->pushUrls($guardianApi->url, $guardianApi->name);
+
+        $fetch->pushUrls([
+            $newsApi->name => $newsApi->url,
+            $newYorkTimeApi->name => $newYorkTimeApi->url,
+            $guardianApi->name => $guardianApi->url
+        ]);
+
 
         $fetch->getHttp();
 
@@ -81,12 +80,8 @@ class FeedApiTest extends TestCase
 
         $fetch->close();
 
-        // $newsApi->format($formatter);
-        // $newYorkTimeApi->format($formatter);
-        // $guardianApi->format($formatter);
         $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
-        dump("............... searc founds");
         dump(count($articles));
 
         $this->assertTrue($fetch->responses[$guardianApi->name]->response->status == "ok");

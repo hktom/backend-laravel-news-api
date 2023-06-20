@@ -10,17 +10,23 @@ scalar DateTimeTz
 # }
 
 type Query {
-    myFeed:  [Article] @guard
+    myFeed: [Article] @guard
     exploreFeed: [Article] @guard
     searchArticle(search: String!): [Article] @guard
+    getArticleBy(key: String!, value: String!): [Article] @guard
+    GetArticleByTaxonomies(key: String!): [Article] @guard
     me: User @auth
 }
 
 type Mutation {
     signIn(email: String!, password: String!): Auth!
-    signUp(name: String!, email: String!, password: String!, confirm_password: String!): Auth!
-    updatePassword(password: String!, confirm_password: String!): User
-        @guard
+    signUp(
+        name: String!
+        email: String!
+        password: String!
+        confirm_password: String!
+    ): Auth!
+    updatePassword(password: String!, confirm_password: String!): User @guard
     updateUser(name: String!, avatar: String): User @update @guard
 
     articleStatus(input: InputArticle! @spread): Article @guard
@@ -132,7 +138,7 @@ type Profile {
     Taxonomies: [Taxonomy]
     settings: [Setting]
     filterBy: String
-    filters: String,
+    filters: String
 }
 
 type Auth {

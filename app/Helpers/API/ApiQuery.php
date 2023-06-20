@@ -8,15 +8,15 @@ class ApiQuery implements ApiQueryInterface
 {
 
     public string $queries = '';
-    public string $type = '';
+    public string $types = '';
 
     public function __construct()
     {
     }
 
-    public function setQueries(string $type, array $queries)
+    public function setQueries(string $types, array $queries)
     {
-        $this->type = $type;
-        $this->queries = implode(',', $queries);
+        $this->types = $types;
+        $this->queries = implode(', ', $queries);
     }
 }

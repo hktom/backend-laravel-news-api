@@ -16,49 +16,41 @@ class NewYorkTimeApi implements ApiInterface
 
     private $api_key;
 
-    public string $url;
+    public string $url = '';
 
     public string $name = 'newYorkTimeApi';
-
-    // private FetchInterface $fetch;
 
 
     public function __construct(FetchInterface $fetch)
     {
         $this->api_key = env('NEW_YORK_TIME_API_KEY');
-        // $this->fetch = $fetch;
     }
 
     public function headlines()
     {
         $url = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=" . $this->api_key;
         $this->url = $url;
-        // $this->fetch->get($url);
-        // if ($this->fetch->response->status == "OK") {
-        //     $this->data = $this->fetch->response->response->docs;
-        // }
     }
 
-    public function userFeed(ApiQueryInterface $apiQuery)
+    public function userFeed(array $apiQuery)
     {
         $url = "https://api.nytimes.com/svc/search/v2/articlesearch.json?";
 
-        if ($apiQuery->queries == 'source' && $apiQuery->queries) {
-            $url .= "fq=source:(" . urlencode(explode(',', $apiQuery->queries)[0]) . ")";
-        } else if ($apiQuery->queries == 'category' && $apiQuery->queries) {
-            $url .= "fq=news_desk:(" . urlencode($apiQuery->queries) . ")";
-        } else {
-            return;
+        if ($apiQuery['type'] == 'category' && $apiQuery['queries']) {
+            $url .= "fq=news_desk:" . $apiQuery['queries'];
+        }
+        
+        if ($apiQuery['type'] =='author' && $apiQuery['queries']) {
+            $url .= "fq=persons:" . $apiQuery['queries'];
+        }
+        
+        if ($apiQuery['type'] == 'source' && $apiQuery['queries']) {
+            $url .= "fq=source:" . $apiQuery['queries'];
         }
 
         $url .= "&api-key=" . $this->api_key;
 
         $this->url = $url;
-
-        // $this->fetch->get($url);
-        // if ($this->fetch->response->status == "OK") {
-        //     $this->data = $this->fetch->response->response->docs;
-        // }
     }
 
     public function search(string $search)
@@ -68,11 +60,6 @@ class NewYorkTimeApi implements ApiInterface
         $url .= "&api-key=" . $this->api_key;
 
         $this->url = $url;
-
-        // $this->fetch->get($url);
-        // if ($this->fetch->response->status == "OK") {
-        //     $this->data = $this->fetch->response->response->docs;
-        // }
     }
 
     public function format(ApiFormatterInterface $formatter, object $data)
@@ -109,8 +96,14 @@ class NewYorkTimeApi implements ApiInterface
                 $formatter->setCategoryName($object->section_name);
             }
 
-            if ($object->headline && is_object($object->headline)) {
+            if (isset($object->headline) && is_object($object->headline)) {
                 $formatter->setTitle($object->headline->main);
+            }
+
+            if (isset($object->byline) && count($object->byline->person) > 0 && is_object($object->byline)) {
+
+                if ($object->byline->person[0]->firstname || $object->byline->person[0]->lastname)
+                    $formatter->setAuthorName($object->byline->person[0]->firstname . " " . $object->byline->person[0]->lastname);
             }
 
             if (count($object->multimedia) > 0) {
