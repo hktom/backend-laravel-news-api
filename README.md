@@ -3,6 +3,8 @@
 The challenge is to build a news aggregator website that pulls articles from various sources and displays them in a clean,
 easy-to-read format
 
+<img src="https://res.cloudinary.com/diaylgu7a/image/upload/f_auto,q_auto/rzpzb5fyot8xfxdovv4u"/>
+
 ### Installation
 
 #### Install manually
