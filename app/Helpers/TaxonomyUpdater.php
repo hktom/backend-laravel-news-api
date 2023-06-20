@@ -17,6 +17,15 @@ class TaxonomyUpdater
     public function upsert(array $args, string $parent_id = null)
     {
 
+        // if ($args['type'] == 'deleted' && isset($args['id'])) {
+        //     $taxonomy = Taxonomy::where('id', $args['id'])->where('user_id', $this->user_id)->first();
+        //     if ($taxonomy) {
+        //         $taxonomy->delete();
+        //         $this->taxonomy = $taxonomy;
+        //     }
+        //     return;
+        // }
+
         $taxonomy = Taxonomy::where('name', $args['name'])->where('type', $args['type'])->where('parent_id', $parent_id)->where('user_id', $this->user_id)->first();
         if (!$taxonomy) {
             $taxonomy = new Taxonomy();

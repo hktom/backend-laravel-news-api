@@ -16,6 +16,7 @@ type Query {
     getArticleBy(key: String!, value: String!): [Article] @guard
     GetArticleByTaxonomies(key: String!): [Article] @guard
     me: User @auth
+    getUserTaxonomies(key: String!): [Taxonomy] @guard
 }
 
 type Mutation {
@@ -32,6 +33,8 @@ type Mutation {
     articleStatus(input: InputArticle! @spread): Article @guard
     taxonomyUpsert(input: InputTaxonomy! @spread): Taxonomy @guard
     settingUpsert(input: InputSetting! @spread): Setting @guard
+
+    deleteTaxonomy(id: ID!): Taxonomy @delete @guard
 }
 
 input InputArticle {
@@ -45,6 +48,7 @@ input InputTaxonomy {
     name: String!
     type: String!
     slug: String
+    id: String
     parent_id: String
 }
 
