@@ -26,13 +26,14 @@ class FeedApiTest extends TestCase
         $guardianApi = new GuardianApi($fetch);
 
         $newsApi->headlines();
-        $fetch->pushUrls($newsApi->url, $newsApi->name);
-
         $newYorkTimeApi->headlines();
-        $fetch->pushUrls($newYorkTimeApi->url, $newYorkTimeApi->name);
-
         $guardianApi->headlines();
-        $fetch->pushUrls($guardianApi->url, $guardianApi->name);
+
+        $fetch->pushUrls([
+            $newsApi->name => $newsApi->url,
+            $newYorkTimeApi->name => $newYorkTimeApi->url,
+            $guardianApi->name => $guardianApi->url
+        ]);
 
         $fetch->getHttp();
 
@@ -65,13 +66,15 @@ class FeedApiTest extends TestCase
         // $apiQuery->getQuery();
 
         $newsApi->search(urlencode($args['search']));
-        $fetch->pushUrls($newsApi->url, $newsApi->name);
-
         $newYorkTimeApi->search(urlencode($args['search']));
-        $fetch->pushUrls($newYorkTimeApi->url, $newYorkTimeApi->name);
-
         $guardianApi->search(urlencode($args['search']));
-        $fetch->pushUrls($guardianApi->url, $guardianApi->name);
+
+        $fetch->pushUrls([
+            $newsApi->name => $newsApi->url,
+            $newYorkTimeApi->name => $newYorkTimeApi->url,
+            $guardianApi->name => $guardianApi->url
+        ]);
+
 
         $fetch->getHttp();
 

@@ -28,7 +28,7 @@ class NewsApi implements ApiInterface
 
     public function headlines()
     {
-        $this->url = "https://newsapi.org/v2/everything?language=en&apiKey=" . $this->api_key;
+        $this->url = "https://newsapi.org/v2/top-headlines?language=en&apiKey=" . $this->api_key;
     }
 
     public function userFeed($apiQuery)

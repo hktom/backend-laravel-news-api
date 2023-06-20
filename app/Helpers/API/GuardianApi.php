@@ -28,14 +28,14 @@ class GuardianApi implements ApiInterface
 
     public function headlines()
     {
-        $url = "https://content.guardianapis.com/search?lang=en&show-fields=thumbnail, byline&show-tags=keyword&api-key=" . $this->api_key;
+        $url = "https://content.guardianapis.com/search?lang=en&show-fields=thumbnail,byline,trailText,body&show-tags=keyword&api-key=" . $this->api_key;
 
         $this->url = $url;
     }
 
     public function userFeed(array $apiQuery)
     {
-        $url = "https://content.guardianapis.com/search?lang=en&show-fields=thumbnail, byline&show-tags=keyword&";
+        $url = "https://content.guardianapis.com/search?lang=en&show-fields=thumbnail,byline,trailText,body&show-tags=keyword&";
 
         if ($apiQuery['type'] == 'author' && $apiQuery['queries']) {
             $url .= "query-fields=byline&";
@@ -52,7 +52,7 @@ class GuardianApi implements ApiInterface
 
     public function search(string $search)
     {
-        $url = "https://content.guardianapis.com/search?lang=en&show-fields=thumbnail,byline&show-tags=keyword";
+        $url = "https://content.guardianapis.com/search?lang=en&show-fields=thumbnail,byline,trailText,body&show-tags=keyword";
         $url .= '&q="' . $search . '"';
         $url .= "&api-key=" . $this->api_key;
 
@@ -68,7 +68,7 @@ class GuardianApi implements ApiInterface
         }
 
         foreach ($this->data as $index => $object) {
-            
+
             $apiFormatter->setSourceName("The Guardian");
 
             if (isset($object->webTitle)) {
@@ -84,16 +84,20 @@ class GuardianApi implements ApiInterface
             }
 
             if (isset($object->tags) && count($object->tags) > 0) {
-                $apiFormatter->setCategoryId($object->tags[0]->sectionId);
-                $apiFormatter->setCategoryName($object->tags[0]->sectionName);
+                if (isset($object->tags[0]->sectionId)) {
+                    $apiFormatter->setCategoryId($object->tags[0]->sectionId);
+                }
+                if (isset($object->tags[0]->sectionName)) {
+                    $apiFormatter->setCategoryName($object->tags[0]->sectionName);
+                }
             }
 
             if (isset($object->fields) && is_object($object->fields)) {
                 $apiFormatter->setImage($object->fields->thumbnail);
                 $apiFormatter->setAuthorName($object->fields->byline);
+                $apiFormatter->setDescription($object->fields->trailText);
+                $apiFormatter->setContent($object->fields->body);
             }
-
-
 
             $formatted[$index] = $apiFormatter->getAllPropertiesAsObject();
             $apiFormatter->reset();

@@ -24,8 +24,12 @@ class GuardianApiTest extends TestCase
         $formatter = new ApiFormatter();
         $guardianApi->headlines();
 
-        $fetch->pushUrls($guardianApi->url, $guardianApi->name);
+        $fetch->pushUrls([
+                $guardianApi->name => $guardianApi->url
+            ]);
         $fetch->getHttp();
+
+        dump($guardianApi->url);
 
         $guardianApi->format($formatter, $fetch->responses[$guardianApi->name]);
         dump($guardianApi->url);
