@@ -32,6 +32,11 @@ final class GetArticleByTaxonomies
         $filterTaxonomy = new FilterTaxonomy();
 
         $taxonomies = Taxonomy::where('user_id', $auth->user_id)->where('type', $args['key'])->get()->toArray();
+        
+        if (count($taxonomies) == 0) {
+            return [];
+        }
+        
         $filterTaxonomy->filter($taxonomies);
         $apiQuery['type'] = $args['key'];
         $apiQuery['queries'] = $filterTaxonomy->data;

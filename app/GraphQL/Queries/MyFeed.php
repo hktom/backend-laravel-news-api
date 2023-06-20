@@ -34,12 +34,20 @@ final class MyFeed
         $filterTaxonomy = new FilterTaxonomy();
         $settings = Setting::where('user_id', $auth->user_id)->first();
 
-        if (isset($settings->feed_by)) {
-            $taxonomies = Taxonomy::where('user_id', $auth->user_id)->where('type', $settings->feed_by)->get()->toArray();
-            $filterTaxonomy->filter($taxonomies);
-            $apiQuery['type'] = $settings->feed_by;
-            $apiQuery['queries'] = $filterTaxonomy->data;
+        if (!isset($settings->feed_by)) {
+            return [];
         }
+
+        $taxonomies = Taxonomy::where('user_id', $auth->user_id)->where('type', $settings->feed_by)->get()->toArray();
+
+        if (count($taxonomies) == 0) {
+            return [];
+        }
+
+
+        $filterTaxonomy->filter($taxonomies);
+        $apiQuery['type'] = $settings->feed_by;
+        $apiQuery['queries'] = $filterTaxonomy->data;
 
         $newsApi->userFeed($apiQuery);
         $newYorkTimeApi->userFeed($apiQuery);
@@ -59,7 +67,7 @@ final class MyFeed
         $guardianApi->format($formatter, $fetch->responses[$guardianApi->name]);
 
         $articles = array_merge(
-            $newsApi->formatted, 
+            $newsApi->formatted,
             $newYorkTimeApi->formatted,
             $guardianApi->formatted
         );
