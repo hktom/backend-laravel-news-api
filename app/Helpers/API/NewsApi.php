@@ -12,15 +12,11 @@ class NewsApi implements ApiInterface
 
     private $api_key;
 
-    // private FetchInterface $fetch;
-
-    // private array $api_data_key;
-
     public array $data = [];
 
     public array $formatted = [];
 
-    public string $url;
+    public string $url = '';
 
     public string $name = 'newsapi';
 
@@ -28,53 +24,39 @@ class NewsApi implements ApiInterface
     public function __construct(FetchInterface $fetch)
     {
         $this->api_key = env('NEWS_API_KEY');
-        // $this->fetch = $fetch;
     }
 
     public function headlines()
     {
-        $this->url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=" . $this->api_key;
-        // $this->fetch->get($url);
-        // if ($this->fetch->response->status == "ok") {
-        //     $this->data = $this->fetch->response->articles;
-        // }
+        $this->url = "https://newsapi.org/v2/everything?language=en&apiKey=" . $this->api_key;
     }
 
     public function userFeed(ApiQueryInterface $apiQuery)
     {
-        $url = "https://newsapi.org/v2/everything?";
+        $url = "https://newsapi.org/v2/everything?language=en&";
 
         if ($apiQuery->type == 'source' && $apiQuery->queries) {
-            $url .= "sources=" . $apiQuery->queries['source'];
-        } else if ($apiQuery->type == 'author' && $apiQuery->queries) {
-            $url .= "q=" . urlencode($apiQuery->queries);
-            $url .= "searchIn=author";
+            $sources = explode(',', $apiQuery->queries);
+            $q = array_slice($sources, 0, 18);
+            $url .= "sources=" . implode(" , ", $q);
         } else {
-            return;
+
+            $q = explode(',', $apiQuery->queries);
+            $url .= "q=" . implode(" OR ", $q);
         }
 
         $url .= "&apiKey=" . $this->api_key;
 
         $this->url = $url;
-
-        // $this->fetch->get($url);
-        // if ($this->fetch->response->status == "ok") {
-        //     $this->data = $this->fetch->response->articles;
-        // }
     }
 
     public function search(string $search)
     {
-        $url = "https://newsapi.org/v2/everything?";
+        $url = "https://newsapi.org/v2/everything?language=en&";
         $url .= "q=" . $search;
         $url .= "&apiKey=" . $this->api_key;
 
         $this->url = $url;
-
-        // $this->fetch->get($url);
-        // if ($this->fetch->response->status == "ok") {
-        //     $this->data = $this->fetch->response->articles;
-        // }
     }
 
     public function format(ApiFormatterInterface $formatter, object $data)
@@ -121,7 +103,6 @@ class NewsApi implements ApiInterface
             }
 
             if (isset($object->author)) {
-                $formatter->setAuthorId($object->author);
                 $formatter->setAuthorName($object->author);
             }
 

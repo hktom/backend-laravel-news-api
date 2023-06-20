@@ -17,6 +17,6 @@ class ApiQuery implements ApiQueryInterface
     public function setQueries(string $type, array $queries)
     {
         $this->type = $type;
-        $this->queries = implode(',', $queries);
+        $this->queries = implode(', ', $queries);
     }
 }

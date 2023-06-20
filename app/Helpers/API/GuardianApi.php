@@ -16,9 +16,7 @@ class GuardianApi implements ApiInterface
 
     private $api_key;
 
-    private FetchInterface $fetch;
-
-    public string $url;
+    public string $url = '';
 
     public string $name = 'guardianApi';
 
@@ -26,56 +24,39 @@ class GuardianApi implements ApiInterface
     public function __construct(FetchInterface $fetch)
     {
         $this->api_key = env('GUARDIAN_API_KEY');
-        // $this->fetch = $fetch;
     }
 
     public function headlines()
     {
-        $url = "https://content.guardianapis.com/search?show-fields=thumbnail&api-key=" . $this->api_key;
+        $url = "https://content.guardianapis.com/search?lang=en&show-fields=thumbnail, byline&show-tags=keyword&api-key=" . $this->api_key;
 
         $this->url = $url;
-
-        // $this->fetch->get($url);
-        // if ($this->fetch->response->response->status == "ok") {
-        //     $this->data = $this->fetch->response->response->results;
-        // }
     }
 
     public function userFeed(ApiQueryInterface $apiQuery)
     {
-        $url = "https://content.guardianapis.com/search?show-fields=thumbnail&";
+        $url = "https://content.guardianapis.com/search?lang=en&show-fields=thumbnail, byline&show-tags=keyword&";
 
-
-        if ($apiQuery->type == 'category' && $apiQuery->queries) {
-            $url .= "section=" . urlencode(explode(',', $apiQuery->queries)[0]);
-        } else if ($apiQuery->type == 'author' && $apiQuery->queries) {
-            $url .= "reference=" . urlencode(explode(',', $apiQuery->queries)[0]);
-        } else {
-            return;
+        if ($apiQuery->type == 'author' && $apiQuery->queries) {
+            $url .= "query-fields=byline&";
         }
+
+        $q = explode(',', $apiQuery->queries);
+        $url .= "q=" . implode(" OR ", $q);
 
         $url .= "&api-key=" . $this->api_key;
 
-        $this->url = $url;
 
-        // $this->fetch->get($url);
-        // if ($this->fetch->response->response->status == "ok") {
-        //     $this->data = $this->fetch->response->response->results;
-        // }
+        $this->url = $url;
     }
 
     public function search(string $search)
     {
-        $url = "https://content.guardianapis.com/search?show-fields=thumbnail,productionOffice";
-        $url .= "&q=" . $search;
+        $url = "https://content.guardianapis.com/search?lang=en&show-fields=thumbnail,byline&show-tags=keyword";
+        $url .= '&q="' . $search . '"';
         $url .= "&api-key=" . $this->api_key;
 
         $this->url = $url;
-
-        // $this->fetch->get($url);
-        // if ($this->fetch->response->response && $this->fetch->response->response->status == "ok") {
-        //     $this->data = $this->fetch->response->response->results;
-        // }
     }
 
     public function format(ApiFormatterInterface $apiFormatter, object $data)
@@ -87,6 +68,9 @@ class GuardianApi implements ApiInterface
         }
 
         foreach ($this->data as $index => $object) {
+            
+            $apiFormatter->setSourceName("The Guardian");
+
             if (isset($object->webTitle)) {
                 $apiFormatter->setTitle($object->webTitle);
             }
@@ -98,24 +82,18 @@ class GuardianApi implements ApiInterface
             if (isset($object->webPublicationDate)) {
                 $apiFormatter->setPublishedAt($object->webPublicationDate);
             }
-            if (isset($object->pillarId)) {
-                $apiFormatter->setSourceId($object->pillarId);
-            }
 
-            if (isset($object->pillarName)) {
-                $apiFormatter->setSourceName($object->pillarName);
-            }
-
-            if (isset($object->sectionName)) {
-                $apiFormatter->setCategoryName($object->sectionName);
-            }
-            if (isset($object->sectionId)) {
-                $apiFormatter->setCategoryId($object->sectionId);
+            if (isset($object->tags) && count($object->tags) > 0) {
+                $apiFormatter->setCategoryId($object->tags[0]->sectionId);
+                $apiFormatter->setCategoryName($object->tags[0]->sectionName);
             }
 
             if (isset($object->fields) && is_object($object->fields)) {
                 $apiFormatter->setImage($object->fields->thumbnail);
+                $apiFormatter->setAuthorName($object->fields->byline);
             }
+
+
 
             $formatted[$index] = $apiFormatter->getAllPropertiesAsObject();
             $apiFormatter->reset();

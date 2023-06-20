@@ -19,7 +19,7 @@ class FilterTaxonomy
 
         foreach ($this->taxonomies as $taxonomy) {
             if ($taxonomy->type == $type) {
-                $data[] = $taxonomy->slug;
+                $data[] = $taxonomy->name;
             }
         }
 
