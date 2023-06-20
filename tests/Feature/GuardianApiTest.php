@@ -37,4 +37,25 @@ class GuardianApiTest extends TestCase
 
         $this->assertTrue($fetch->responses[$guardianApi->name]->response->status == "ok");
     }
+
+    public function test_search(): void
+    {
+        $fetch = new Fetch();
+        $guardianApi = new GuardianApi($fetch);
+        $formatter = new ApiFormatter();
+        $guardianApi->search('elon musk');
+
+        $fetch->pushUrls([
+                $guardianApi->name => $guardianApi->url
+            ]);
+        $fetch->getHttp();
+
+        dump($guardianApi->url);
+
+        $guardianApi->format($formatter, $fetch->responses[$guardianApi->name]);
+        dump($guardianApi->url);
+        dump($guardianApi->formatted[0]);
+
+        $this->assertTrue($fetch->responses[$guardianApi->name]->response->status == "ok");
+    }
 }

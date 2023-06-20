@@ -61,10 +61,6 @@ class FeedApiTest extends TestCase
         $newYorkTimeApi = new NewYorkTimeAPI($fetch);
         $guardianApi = new GuardianApi($fetch);
 
-        // $apiQuery = new ApiQuery();
-        // $apiQuery->setSearch($args['search']);
-        // $apiQuery->getQuery();
-
         $newsApi->search(urlencode($args['search']));
         $newYorkTimeApi->search(urlencode($args['search']));
         $guardianApi->search(urlencode($args['search']));
@@ -84,12 +80,8 @@ class FeedApiTest extends TestCase
 
         $fetch->close();
 
-        // $newsApi->format($formatter);
-        // $newYorkTimeApi->format($formatter);
-        // $guardianApi->format($formatter);
         $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
 
-        dump("............... searc founds");
         dump(count($articles));
 
         $this->assertTrue($fetch->responses[$guardianApi->name]->response->status == "ok");

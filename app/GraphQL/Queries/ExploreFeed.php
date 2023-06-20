@@ -7,14 +7,6 @@ use App\Helpers\API\NewYorkTimeAPI;
 use App\Helpers\API\GuardianApi;
 use App\Helpers\API\ApiFormatter;
 use App\Helpers\Fetch;
-// use App\Helpers\Authentication;
-// use App\Helpers\Interfaces\ApiInterface;
-// use App\Helpers\Interfaces\ApiFormatterInterface;
-// use App\Models\Setting;
-// use App\Models\Taxonomy;
-// use App\Helpers\Interfaces\ApiQueryInterface;
-// use App\Helpers\API\ApiQuery;
-// use App\Helpers\FilterTaxonomy;
 
 final class ExploreFeed
 {
@@ -25,27 +17,6 @@ final class ExploreFeed
      */
     public function __invoke($_, array $args)
     {
-        // $fetch = new Fetch();
-        // $formatter = new ApiFormatter();
-        // $newsApi = new NewsAPI($fetch);
-        // // $newYorkTimeApi = new NewYorkTimeAPI($fetch);
-        // // $guardianApi = new GuardianApi($fetch);
-
-        // $newsApi->headlines();
-        
-        // $fetch->pushUrls($newsApi->url, $newsApi->name);
-        // $fetch->getHttp();
-
-        // $newsApi->format($formatter, $fetch->responses[$newsApi->name]);
-
-        // // $newYorkTimeApi->headlines();
-        // // $newYorkTimeApi->format($formatter);
-
-        // // $guardianApi->headlines();
-        // // $guardianApi->format($formatter);
-
-        // $fetch->close();
-
         $fetch = new Fetch();
         $formatter = new ApiFormatter();
         $newsApi = new NewsAPI($fetch);
@@ -53,13 +24,15 @@ final class ExploreFeed
         $guardianApi = new GuardianApi($fetch);
 
         $newsApi->headlines();
-        $fetch->pushUrls($newsApi->url, $newsApi->name);
-
         $newYorkTimeApi->headlines();
-        $fetch->pushUrls($newYorkTimeApi->url, $newYorkTimeApi->name);
-
         $guardianApi->headlines();
-        $fetch->pushUrls($guardianApi->url, $guardianApi->name);
+
+        $fetch->pushUrls([
+            $newsApi->name => $newsApi->url,
+            $newYorkTimeApi->name => $newYorkTimeApi->url,
+            $guardianApi->name => $guardianApi->url
+        ]);
+
 
         $fetch->getHttp();
 
@@ -69,9 +42,12 @@ final class ExploreFeed
 
         $fetch->close();
 
-        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
+        $articles = array_merge(
+            $newsApi->formatted, 
+            $newYorkTimeApi->formatted, 
+            $guardianApi->formatted
+        );
 
         return $articles;
-        
     }
 }

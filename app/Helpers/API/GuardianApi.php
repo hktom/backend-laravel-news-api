@@ -93,10 +93,21 @@ class GuardianApi implements ApiInterface
             }
 
             if (isset($object->fields) && is_object($object->fields)) {
-                $apiFormatter->setImage($object->fields->thumbnail);
-                $apiFormatter->setAuthorName($object->fields->byline);
-                $apiFormatter->setDescription($object->fields->trailText);
-                $apiFormatter->setContent($object->fields->body);
+                if (isset($object->fields->thumbnail)) {
+                    $apiFormatter->setImage($object->fields->thumbnail);
+                }
+
+                if (isset($object->fields->byline)) {
+                    $apiFormatter->setAuthorName($object->fields->byline);
+                }
+
+                if (isset($object->fields->trailText)) {
+                    $apiFormatter->setDescription($object->fields->trailText);
+                }
+
+                if (isset($object->fields->body)) {
+                    $apiFormatter->setContent($object->fields->body);
+                }
             }
 
             $formatted[$index] = $apiFormatter->getAllPropertiesAsObject();
