@@ -28,13 +28,13 @@ type Mutation {
         confirm_password: String!
     ): Auth!
     updatePassword(password: String!, confirm_password: String!): User @guard
-    updateUser(name: String!, avatar: String): User @update @guard
+    updateUser(id: ID!, name: String!, avatar: String): User @update @guard
 
     articleStatus(input: InputArticle! @spread): Article @guard
     taxonomyUpsert(input: InputTaxonomy! @spread): Taxonomy @guard
     settingUpsert(input: InputSetting! @spread): Setting @guard
 
-    deleteTaxonomy(id: ID!): Taxonomy @delete @guard
+    deleteTaxonomy(id: ID! @whereKey): Taxonomy @delete @guard
 }
 
 input InputArticle {
