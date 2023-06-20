@@ -14,7 +14,7 @@ final class GetArticleBy
     public function __invoke($_, array $args)
     {
         $auth = new Authentication();
-        $articles = Article::where('user_id', $auth->user_id)->where($args['by'], $args['value'])->get();
+        $articles = Article::where('user_id', $auth->user_id)->where($args['key'], $args['value'])->get();
         return $articles;
     }
 }
