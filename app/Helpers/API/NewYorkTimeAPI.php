@@ -5,9 +5,9 @@ namespace App\Helpers\API;
 use App\Helpers\Interfaces\ApiInterface;
 use App\Helpers\Interfaces\FetchInterface;
 use App\Helpers\Interfaces\ApiFormatterInterface;
-use App\Helpers\Interfaces\ApiQueryInterface;
+// use App\Helpers\Interfaces\ApiQueryInterface;
 
-class NewYorkTimeApi implements ApiInterface
+class NewYorkTimeAPI implements ApiInterface
 {
 
     public array $data = [];
@@ -18,7 +18,7 @@ class NewYorkTimeApi implements ApiInterface
 
     public string $url = '';
 
-    public string $name = 'newYorkTimeApi';
+    public string $name = 'NewYorkTimeAPI';
 
 
     public function __construct(FetchInterface $fetch)

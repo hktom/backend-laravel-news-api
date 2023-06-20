@@ -29,7 +29,7 @@ class MyFeedTest extends TestCase
         $fetch = new Fetch();
         $formatter = new ApiFormatter();
         $newsApi = new NewsAPI($fetch);
-        $newYorkTimeApi = new NewYorkTimeAPI($fetch);
+        $newYorkTimeAPI = new NewYorkTimeAPI($fetch);
         $guardianApi = new GuardianApi($fetch);
         $apiQuery = ['type' => '', 'queries' => ''];
         $filterTaxonomy = new FilterTaxonomy();
@@ -43,35 +43,35 @@ class MyFeedTest extends TestCase
         }
 
         $newsApi->userFeed($apiQuery);
-        $newYorkTimeApi->userFeed($apiQuery);
+        $newYorkTimeAPI->userFeed($apiQuery);
         $guardianApi->userFeed($apiQuery);
 
 
         $fetch->pushUrls([
             $newsApi->name => $newsApi->url,
-            $newYorkTimeApi->name => $newYorkTimeApi->url,
+            $newYorkTimeAPI->name => $newYorkTimeAPI->url,
             $guardianApi->name => $guardianApi->url
         ]);
 
         $this->assertTrue($apiQuery['type'] == $settings->feed_by);
         $this->assertTrue($newsApi->url!='');
-        $this->assertTrue($newYorkTimeApi->url!='');
+        $this->assertTrue($newYorkTimeAPI->url!='');
         $this->assertTrue($guardianApi->url!='');
 
 
         dump('url ====>');
         dump($apiQuery['type']);
         dump($newsApi->url);
-        dump($newYorkTimeApi->url);
+        dump($newYorkTimeAPI->url);
         dump($guardianApi->url);
 
         $fetch->getHttp();
         
-        $newYorkTimeApi->format($formatter, $fetch->responses[$newYorkTimeApi->name]);
+        $newYorkTimeAPI->format($formatter, $fetch->responses[$newYorkTimeAPI->name]);
         $newsApi->format($formatter, $fetch->responses[$newsApi->name]);
         $guardianApi->format($formatter, $fetch->responses[$guardianApi->name]);
 
-        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
+        $articles = array_merge($newsApi->formatted, $newYorkTimeAPI->formatted, $guardianApi->formatted);
         $fetch->close();
 
         

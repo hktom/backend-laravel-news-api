@@ -22,23 +22,23 @@ class FeedApiTest extends TestCase
         $fetch = new Fetch();
         $formatter = new ApiFormatter();
         $newsApi = new NewsAPI($fetch);
-        $newYorkTimeApi = new NewYorkTimeAPI($fetch);
+        $newYorkTimeAPI = new NewYorkTimeAPI($fetch);
         $guardianApi = new GuardianApi($fetch);
 
         $newsApi->headlines();
-        $newYorkTimeApi->headlines();
+        $newYorkTimeAPI->headlines();
         $guardianApi->headlines();
 
         $fetch->pushUrls([
             $newsApi->name => $newsApi->url,
-            $newYorkTimeApi->name => $newYorkTimeApi->url,
+            $newYorkTimeAPI->name => $newYorkTimeAPI->url,
             $guardianApi->name => $guardianApi->url
         ]);
 
         $fetch->getHttp();
 
         $newsApi->format($formatter, $fetch->responses[$newsApi->name]);
-        $newYorkTimeApi->format($formatter, $fetch->responses[$newYorkTimeApi->name]);
+        $newYorkTimeAPI->format($formatter, $fetch->responses[$newYorkTimeAPI->name]);
         $guardianApi->format($formatter, $fetch->responses[$guardianApi->name]);
 
         $fetch->close();
@@ -46,7 +46,7 @@ class FeedApiTest extends TestCase
 
         $this->assertTrue($fetch->responses[$guardianApi->name]->response->status == "ok");
         $this->assertTrue($fetch->responses[$newsApi->name]->status == "ok");
-        $this->assertTrue($fetch->responses[$newYorkTimeApi->name]->status == "OK");
+        $this->assertTrue($fetch->responses[$newYorkTimeAPI->name]->status == "OK");
     }
 
     public function test_search(): void
@@ -58,16 +58,16 @@ class FeedApiTest extends TestCase
         $fetch = new Fetch();
         $formatter = new ApiFormatter();
         $newsApi = new NewsAPI($fetch);
-        $newYorkTimeApi = new NewYorkTimeAPI($fetch);
+        $newYorkTimeAPI = new NewYorkTimeAPI($fetch);
         $guardianApi = new GuardianApi($fetch);
 
         $newsApi->search(urlencode($args['search']));
-        $newYorkTimeApi->search(urlencode($args['search']));
+        $newYorkTimeAPI->search(urlencode($args['search']));
         $guardianApi->search(urlencode($args['search']));
 
         $fetch->pushUrls([
             $newsApi->name => $newsApi->url,
-            $newYorkTimeApi->name => $newYorkTimeApi->url,
+            $newYorkTimeAPI->name => $newYorkTimeAPI->url,
             $guardianApi->name => $guardianApi->url
         ]);
 
@@ -75,17 +75,17 @@ class FeedApiTest extends TestCase
         $fetch->getHttp();
 
         $newsApi->format($formatter, $fetch->responses[$newsApi->name]);
-        $newYorkTimeApi->format($formatter, $fetch->responses[$newYorkTimeApi->name]);
+        $newYorkTimeAPI->format($formatter, $fetch->responses[$newYorkTimeAPI->name]);
         $guardianApi->format($formatter, $fetch->responses[$guardianApi->name]);
 
         $fetch->close();
 
-        $articles = array_merge($newsApi->formatted, $newYorkTimeApi->formatted, $guardianApi->formatted);
+        $articles = array_merge($newsApi->formatted, $newYorkTimeAPI->formatted, $guardianApi->formatted);
 
         dump(count($articles));
 
         $this->assertTrue($fetch->responses[$guardianApi->name]->response->status == "ok");
         $this->assertTrue($fetch->responses[$newsApi->name]->status == "ok");
-        $this->assertTrue($fetch->responses[$newYorkTimeApi->name]->status == "OK");
+        $this->assertTrue($fetch->responses[$newYorkTimeAPI->name]->status == "OK");
     }
 }
