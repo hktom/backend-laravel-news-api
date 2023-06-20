@@ -95,7 +95,7 @@ class NewsApi implements ApiInterface
             }
 
             if (isset($object->source->id)) {
-                $formatter->setSourceId($object->source->id);
+                $formatter->setSourceName($object->source->id);
             }
 
             if (isset($object->source->name)) {
@@ -107,7 +107,7 @@ class NewsApi implements ApiInterface
             }
 
             if (isset($object->category)) {
-                $formatter->setCategoryId($object->category);
+                // $formatter->setCategoryId($object->category);
                 $formatter->setCategoryName($object->category);
             }
 

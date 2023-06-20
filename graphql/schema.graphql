@@ -14,6 +14,7 @@ type Query {
     exploreFeed: [Article] @guard
     searchArticle(search: String!): [Article] @guard
     getArticleBy(key: String!, value: String!): [Article] @guard
+    GetArticleByTaxonomies(key: String!): [Article] @guard
     me: User @auth
 }
 
