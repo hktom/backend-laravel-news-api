@@ -4,25 +4,21 @@ namespace App\Helpers;
 
 class FilterTaxonomy
 {
-    private object $taxonomies;
-    public array $data;
+    public string $data;
 
 
-    public function __construct(object $taxonomies)
+    public function __construct()
     {
-        $this->taxonomies = $taxonomies;
     }
 
-    public function filter(string $type)
+    public function filter(array $taxonomies)
     {
         $data = [];
 
-        foreach ($this->taxonomies as $taxonomy) {
-            if ($taxonomy->type == $type) {
-                $data[] = $taxonomy->name;
-            }
+        foreach ($taxonomies as $taxonomy) {
+            $data[] = $taxonomy['name'];
         }
 
-        $this->data = $data;
+        $this->data = implode(', ', $data);
     }
 }

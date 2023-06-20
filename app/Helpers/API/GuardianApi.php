@@ -33,15 +33,15 @@ class GuardianApi implements ApiInterface
         $this->url = $url;
     }
 
-    public function userFeed(ApiQueryInterface $apiQuery)
+    public function userFeed(array $apiQuery)
     {
         $url = "https://content.guardianapis.com/search?lang=en&show-fields=thumbnail, byline&show-tags=keyword&";
 
-        if ($apiQuery->type == 'author' && $apiQuery->queries) {
+        if ($apiQuery['type'] == 'author' && $apiQuery['queries']) {
             $url .= "query-fields=byline&";
         }
 
-        $q = explode(',', $apiQuery->queries);
+        $q = explode(',', $apiQuery['queries']);
         $url .= "q=" . implode(" OR ", $q);
 
         $url .= "&api-key=" . $this->api_key;

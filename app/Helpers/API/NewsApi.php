@@ -31,17 +31,17 @@ class NewsApi implements ApiInterface
         $this->url = "https://newsapi.org/v2/everything?language=en&apiKey=" . $this->api_key;
     }
 
-    public function userFeed(ApiQueryInterface $apiQuery)
+    public function userFeed($apiQuery)
     {
         $url = "https://newsapi.org/v2/everything?language=en&";
 
-        if ($apiQuery->type == 'source' && $apiQuery->queries) {
-            $sources = explode(',', $apiQuery->queries);
+        if ($apiQuery['type'] == 'source' && $apiQuery['queries']) {
+            $sources = explode(',', $apiQuery['queries']);
             $q = array_slice($sources, 0, 18);
             $url .= "sources=" . implode(" , ", $q);
         } else {
 
-            $q = explode(',', $apiQuery->queries);
+            $q = explode(',', $apiQuery['queries']);
             $url .= "q=" . implode(" OR ", $q);
         }
 

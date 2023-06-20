@@ -58,7 +58,7 @@
 //             'settings' => $settings,
 //             'taxonomies' => $this->taxonomies,
 //             'filterBy' => $apiQuery->type,
-//             'filters' => $apiQuery->queries,
+//             'filters' => $apiQuery['queries'],
 //         ];
 //     }
 

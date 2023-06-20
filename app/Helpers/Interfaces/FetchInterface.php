@@ -10,5 +10,5 @@ interface FetchInterface
 
     public function close();
 
-    public function pushUrls(string $url, string $key);
+    public function pushUrls(array $url);
 }
